@@ -1,5 +1,3 @@
-let _ = require('lodash')
-
 let config = {
   base: {
     port: process.env.PORT || 3000

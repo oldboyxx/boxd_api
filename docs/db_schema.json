@@ -11,143 +11,14 @@ Project:
   title: ""
   desc: ""
   avatar: ""
-
-  user_ids: [{ _id: ID, admin: true }]
-
-
-Boards:
-  title: ""
-  background: ""
-
-  project_id: 1
-  user_ids: [{ _id: ID, admin: true }]
-
-
-Lists:
-  title: ""
-  position: 1
-
-  board_id: 1
-
-
-Tasks:
-  title: ""
-  desc: ""
-  label: ""
-  due_date: Date
-  position: 1
-  users_arr: [{ _id: ID, avatar: "", name: "" }]
-
-  list_id: 1
-
-
-Comments:
-  content: ""
-  user: { _id: ID, avatar: "", name: "" }
-
-  task_id: 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-User:
-  name: ""
-  email: ""
-  desc: ""
-  website: ""
-  avatar: ""
-
-  projects: [{ _id: ID, admin: true }]
-  boards: [{ _id: ID, admin: true }]
-
-
-Project:
-  title: ""
-  desc: ""
-  avatar: ""
-
-  board_ids: []
+  users: [ID]
 
 
 Boards:
   title: ""
   background: ""
-
-  list_ids: []
-
-
-Lists:
-  title: ""
-  position: 1
-
-  task_ids: []
-
-
-Tasks:
-  title: ""
-  desc: ""
-  label: ""
-  due_date: Date
-  position: 1
-  users_arr: [{ _id: ID, avatar: "", name: "" }]
-
-  comment_ids: []
-
-
-Comments:
-  content: ""
-  user: { _id: ID, avatar: "", name: "" }
-
-
-
-
-
-
-
-
-
-
-
-
-User:
-  name: ""
-  email: ""
-  desc: ""
-  website: ""
-  avatar: ""
-
-
-Project:
-  title: ""
-  desc: ""
-  avatar: ""
-
   users: [{ _id: ID, admin: true }]
-
-
-Boards:
-  title: ""
-  background: ""
-
   project_id: 1
-  users: [{ _id: ID, admin: true }]
 
   Lists:
     title: ""
@@ -160,14 +31,12 @@ Tasks:
   label: ""
   due_date: Date
   position: 1
-
-  list_id: 1
-  users: [{ _id: ID, avatar: "", name: "" }]
+  users: [ID]
+  list_id: ID
 
   Comments:
     content: ""
-    user: { _id: ID, avatar: "", name: "" }
-
+    user: ID
 
 
 

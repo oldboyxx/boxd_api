@@ -1,33 +1,23 @@
 let router = require('express').Router()
-let { model: User } = require('../models/user')
+let { $ } = require('../models/user')
 
-router.get('/', (req, res, next) => {
-  User.find({}, (err, users) => {
-    if (err) return next(err)
-    res.json({ data: users })
-  })
-})
+router.post('/',
+  $.createUser
+)
 
-router.get('/:id', (req, res, next) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err || !user) return next(err)
-    res.json({ data: user })
-  })
-})
+router.get('/',
+  $.validateAdmin,
+  $.getUsers
+)
 
-router.post('/', (req, res, next) => {
-  User.create(req.body, (err, user) => {
-    if (err) return next(err)
-    res.json({ data: user })
-  })
-})
+router.get('/:id',
+  $.validateAdmin,
+  $.getUser
+)
 
-router.put('/:id', (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, req.body,
-  { runValidators: true }, (err, user) => {
-    if (err || !user) return next(err)
-    res.json({ data: user })
-  })
-})
+router.put('/:id',
+  $.validateSelf,
+  $.updateUser
+)
 
 module.exports = router

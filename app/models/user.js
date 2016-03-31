@@ -1,7 +1,7 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
-let schema = new Schema({
+let userSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -30,8 +30,52 @@ let schema = new Schema({
   }
 })
 
-schema.index({ email: 1 })
+userSchema.index({ email: 1 }, { unique: true })
 
-let model = mongoose.model('User', schema)
+let User = mongoose.model('User', userSchema)
 
-module.exports = { schema, model }
+let $ = {
+
+  validateAdmin(req, res, next) {
+    next(req.user.isAdmin ? null : _.$err('denied'))
+  },
+
+  validateSelf(req, res, next) {
+    next(req.user.id === req.params.id ? null : _.$err('denied'))
+  },
+
+  createUser(req, res, next) {
+    User.create(req.body, (err, user) => {
+      if (err) return next(_.$err("This email already exists.", 400))
+      res.json({ data: user })
+    })
+  },
+
+  getUsers(req, res, next) {
+    User.find({}, (err, users) => {
+      if (err) return next(err)
+      res.json({ data: users })
+    })
+  },
+
+  getUser(req, res, next) {
+    User.findById(req.params.id, (err, user) => {
+      if (err) return next(err)
+      if (!user) return next(_.$err('user:null'))
+
+      res.json({ data: user })
+    })
+  },
+
+  updateUser(req, res, next) {
+    User.findByIdAndUpdate(req.params.id, req.body,
+    { runValidators: true, new: true }, (err, user) => {
+
+      if (err) return next(_.$err("This email already exists.", 400))
+      if (!user) return next(_.$err('user:null'))
+      res.json({ data: user })
+    })
+  }
+}
+
+module.exports = { userSchema, User, $ }

@@ -1,4 +1,5 @@
-let Schema = require('mongoose').Schema
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 let listSchema = new Schema({
   title: {
@@ -9,11 +10,6 @@ let listSchema = new Schema({
   position: {
     type: Number,
     required: true
-  },
-
-  archieved: {
-    type: Boolean,
-    default: false
   }
 })
 

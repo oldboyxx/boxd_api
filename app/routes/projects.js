@@ -1,44 +1,46 @@
-let mongoose = require('mongoose')
 let router = require('express').Router()
-let { model: Project } = require('../models/project')
-let { model: Board } = require('../models/board')
+let { Project, $ } = require('../models/project')
+let { Board } = require('../models/board')
+let { User } = require('../models/user')
 
-router.get('/', (req, res, next) => {
-  Project.find({ 'users._id': req.user.id, archieved: false }, (err, projects) => {
+router.post('/',
+  $.createProject
+)
+
+router.get('/',
+  $.getProjects
+)
+
+/*
+router.get('/:id',
+  $.validateAccess
+)
+*/
+/*Project.findById(req.params.id).lean().exec((err, project) => {
+  if (err || !project) return next(err)
+
+  if (!_.find(project.users, { _id: req.user.id })) {
+    return next(_.$err('denied'))
+  }
+
+  let sel = { project_id: project._id, 'users._id': req.user.id }
+
+  Board.find(sel, 'title background project_id').lean().exec((err, boards) => {
     if (err) return next(err)
 
-    let project_ids = _.map(projects, (p) => { return p._id })
+    let userIDs = _.map(project.users, (u) => { return u._id })
 
-    Board.find({ _id: { $in: project_ids }, archieved: false }, (err, boards) => {
+    User.find({ _id: { $in: userIDs }}, '-email').lean().exec((err, users) => {
       if (err) return next(err)
-      res.json({ data: { projects, boards }})
+      res.json({ data: { project, boards, users }})
     })
   })
-})
+})*/
 
-router.get('/:id', (req, res, next) => {
-  Project.findById(req.params.id, (err, project) => {
-    if (err || !project) return next(err)
 
-    if (!_.find(project.users, { _id: req.user.id })) {
-      return next(_.$err("notAuthorized"))
-    }
-
-    Board.find({ _id: project._id, archieved: false }, (err, boards) => {
-      if (err) return next(err)
-      res.json({ data: { project, boards }})
-    })
-  })
-})
-
-router.post('/', (req, res, next) => {
-  req.body.users = [{ _id: req.user.id, admin: true }]
-
-  Project.create(req.body, (err, project) => {
-    if (err) return next(err)
-    res.json({ data: project })
-  })
-})
+/**
+* UPDATE project
+*/
 
 router.put('/:id', (req, res, next) => {
   let r = req.body
@@ -46,10 +48,11 @@ router.put('/:id', (req, res, next) => {
   Project.findById(req.params.id, (err, project) => {
     if (err || !project) return next(err)
 
-    if (!_.find(project.users, { _id: req.user.id })) {
-      return next(_.$err("notAuthorized"))
+    if (!_.find(project.users, { _id: req.user.id, admin: true })) {
+      return next(_.$err('denied'))
     }
 
+    delete r.users // Protection
     project.set(r)
 
     if (r.add_user_id) {
@@ -63,6 +66,35 @@ router.put('/:id', (req, res, next) => {
     project.save((err, project) => {
       if (err) return next(err)
       res.json({ data: project })
+    })
+  })
+})
+
+/**
+* DELETE project and associated boards:lists, tasks:comments
+*/
+
+router.delete('/:id', (req, res, next) => {
+  Project.findById(req.params.id, (err, project) => {
+    if (err || !project) return next(err)
+
+    if (!_.find(project.users, { _id: req.user.id, admin: true })) {
+      return next(_.$err('denied'))
+    }
+
+    project.remove((err, project) => {
+      if (err) return next(err)
+
+      board.remove({ project_id: project._id }).remove((err, boards) => {
+        if (err) return next(err)
+
+        let boardIDs = _.map(boards, (b) => { return b._id })
+
+        Task.remove({ board_id: { $in: boardIDs }}, (err, tasks) => {
+          if (err) return next(err)
+          res.json({ data: project })
+        })
+      })
     })
   })
 })

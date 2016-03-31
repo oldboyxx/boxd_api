@@ -12,4 +12,6 @@ let userAdminSchema = new Schema({
   }
 })
 
+userAdminSchema.index({ '_id': 1 })
+
 module.exports = { userAdminSchema }

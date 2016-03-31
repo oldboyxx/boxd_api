@@ -2,7 +2,7 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 let { commentSchema } = require('./comment')
 
-let schema = new Schema({
+let taskSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -12,10 +12,10 @@ let schema = new Schema({
     type: String,
     maxlength: 10000
   },
-  labels: [{
-    type: String,
-    maxlength: 30
-  }],
+  labels: {
+    type: [String],
+    default: []
+  },
   due_date: {
     type: Date
   },
@@ -24,6 +24,10 @@ let schema = new Schema({
     required: true
   },
 
+  board_id: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   list_id: {
     type: Schema.Types.ObjectId,
     required: true
@@ -33,19 +37,19 @@ let schema = new Schema({
     type: [String],
     default: []
   },
+
   comments: {
     type: [commentSchema],
     default: []
   },
-
-  archieved: {
-    type: Boolean,
-    default: false
+  comments_count: {
+    type: Number,
+    default: 0
   }
 })
 
-schema.index({ 'list_id': 1 })
+taskSchema.index({ 'list_id': 1 })
 
-let model = mongoose.model('Task', schema)
+let Task = mongoose.model('Task', taskSchema)
 
-module.exports = { schema, model }
+module.exports = { taskSchema, Task }

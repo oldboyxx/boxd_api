@@ -1,8 +1,8 @@
 let router = require('express').Router()
 
-let routes = ['users', 'projects']
+let routes = ['users', 'projects', 'boards', 'lists', 'tasks', 'comments']
 
-_.forEach(routes, (name) => {
+_.each(routes, (name) => {
   router.use('/'+name,  require('./'+name))
 })
 

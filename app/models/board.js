@@ -1,9 +1,9 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
-let { userAdminSchema } = require('./_shared')
 let { listSchema } = require('./list')
+let { userAdminSchema } = require('./_shared')
 
-let schema = new Schema({
+let boardSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -21,25 +21,18 @@ let schema = new Schema({
   users: {
     type: [userAdminSchema],
     validate: {
-      validator(arr) { return !!arr.length },
-      message: 'You can\'t remove all users from a board.'
+      validator(arr) { return !!_.find(arr, { admin: true }) },
+      message: 'You can\'t remove all admins from a board.'
     }
   },
-
   lists: {
     type: [listSchema],
     default: []
-  },
-
-  archieved: {
-    type: Boolean,
-    default: false
   }
 })
 
-schema.index({ 'project_id': 1 })
-schema.index({ 'users._id': 1 })
+boardSchema.index({ 'project_id': 1 })
 
-let model = mongoose.model('Board', schema)
+let Board = mongoose.model('Board', boardSchema)
 
-module.exports = { schema, model }
+module.exports = { boardSchema, Board }

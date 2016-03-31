@@ -32,7 +32,7 @@ function handleErrors(err, req, res, next) {
 }
 
 function routeNotFound(req, res, next) {
-  next(_.$newErr("Requested route doesn't exist.", 404))
+  next(_.$err("Requested route doesn't exist.", 404))
 }
 
 module.exports = { handleErrors, routeNotFound }

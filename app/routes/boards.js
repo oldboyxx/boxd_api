@@ -1,54 +1,113 @@
-/*let mongoose = require('mongoose')
 let router = require('express').Router()
-let { model: Board } = require('../models/board')
+let { Project } = require('../models/project')
+let { Board } = require('../models/board')
+let { Task } = require('../models/task')
+let { User } = require('../models/user')
 
-router.get('/', (req, res, next) => {
-  Board.find({}, (err, boards) => {
-    if (err) return next(err)
-    res.json(boards)
-  })
-})
-
-router.post('/', (req, res, next) => {
-  req.body.users = [{ _id: req.body.user_id, admin: true }]
-
-  Project.create(req.body, (err, project) => {
-    if (err) return next(err)
-    res.json(project)
-  })
-})
+/**
+* GET SINGLE board with lists and tasks
+*/
 
 router.get('/:id', (req, res, next) => {
-  Project.findById(req.params.id, (err, project) => {
-    if (err || !project) return next(err)
-    res.json(project)
+  Board.findById(req.params.id).lean().exec((err, board) => {
+    if (err || !board) return next(err)
+
+    if (!_.find(board.users, { _id: req.user.id })) {
+      return next(_.$err('denied'))
+    }
+
+    Task.find({ board_id: board._id }, '-desc -comments').lean().exec((err, tasks) => {
+      if (err) return next(err)
+
+      let taskUserIDs = _.flatMap(tasks, (t) => { return t.users })
+      let boardUserIDs = _.map(board.users, (u) => { return u._id })
+      let userIDs = _.uniq(taskUserIDs.concat(boardUserIDs))
+
+      User.find({ _id: { $in: userIDs }}, '-email').lean().exec((err, users) => {
+        if (err) return next(err)
+        res.json({ data: { board, tasks, users }})
+      })
+    })
   })
 })
+
+/**
+* CREATE board
+*/
+
+router.post('/', (req, res, next) => {
+  Project.findById(req.body.project_id).lean().exec((err, project) => {
+    if (err || !project) return next(err)
+
+    if (!_.find(project.users, { _id: req.user.id })) {
+      return next(_.$err('denied'))
+    }
+
+    req.body.users = [{ _id: req.user.id, admin: true }]
+    req.body.lists = [] // Protection
+
+    Board.create(req.body, (err, board) => {
+      if (err) return next(err)
+      res.json({ data: board })
+    })
+  })
+})
+
+/**
+* UPDATE board
+*/
 
 router.put('/:id', (req, res, next) => {
   let r = req.body
 
-  Project.findById(req.params.id, (err, project) => {
-    if (err || !project) return next(err)
+  Board.findById(req.params.id, (err, board) => {
+    if (err || !board) return next(err)
 
-    project.set(r)
-
-    if (r.add_user_id) {
-
-      let user = { _id: r.add_user_id, admin: r.admin }
-      _.$upsert(project.users, { _id: r.add_user_id }, user)
-
-    } else if (r.remove_user_id) {
-
-      project.users.pull(r.remove_user_id)
+    if (!_.find(board.users, { _id: req.user.id, admin: true })) {
+      return next(_.$err('denied'))
     }
 
-    project.save((err, project) => {
+    delete r.users // Protection
+    delete r.lists // Protection
+    delete r.project_id // Protection
+    board.set(r)
+
+    if (r.add_user_id) {
+      let user = { _id: r.add_user_id, admin: r.admin }
+      _.$upsert(board.users, { _id: r.add_user_id }, user)
+
+    } else if (r.remove_user_id) {
+      board.users.pull(r.remove_user_id)
+    }
+
+    board.save((err, board) => {
       if (err) return next(err)
-      res.json(project)
+      res.json({ data: board })
+    })
+  })
+})
+
+/**
+* DELETE board and associated lists, tasks:comments
+*/
+
+router.delete('/:id', (req, res, next) => {
+  Board.findById(req.params.id, (err, board) => {
+    if (err || !board) return next(err)
+
+    if (!_.find(board.users, { _id: req.user.id, admin: true })) {
+      return next(_.$err('denied'))
+    }
+
+    board.remove((err, board) => {
+      if (err) return next(err)
+
+      Task.remove({ board_id: board._id }, (err, tasks) => {
+        if (err) return next(err)
+        res.json({ data: board })
+      })
     })
   })
 })
 
 module.exports = router
-*/

@@ -1,4 +1,5 @@
-let Schema = require('mongoose').Schema
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 let commentSchema = new Schema({
   content: {
