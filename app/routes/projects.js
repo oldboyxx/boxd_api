@@ -10,17 +10,19 @@ router.get('/',
 )
 
 router.get('/:id',
-  _.$args(shared.getItem, 'project'),
-  shared.validateAccess,
+  shared.getItem('project'),
+  shared.validateAccess(),
   project.getBoards,
   project.getUsers,
-  project.returnProjectBoardsUsers
+  shared.respond()
 )
 
 router.put('/:id',
-  _.$args(shared.getItem, 'project'),
-  _.$args(shared.validateAccess, "admin"),
-  project.updateProject
+  shared.getItem('project'),
+  shared.validateAccess('admin'),
+  project.updateProject,
+  shared.saveItem('project'),
+  shared.respond()
 )
 
 

@@ -25,47 +25,40 @@ let actions = {
   },
 
   getBoards(req, res, next) {
-    let sel = { project_id: req.project._id, 'users._id': req.user.id }
+    let sel = { project_id: req.$.project._id, 'users._id': req.user.id }
 
     Board.find(sel, 'title background project_id').lean().exec((err, boards) => {
       if (err) return next(err)
-      req.boards = boards
+      req.$.boards = boards
       next()
     })
   },
 
   getUsers(req, res, next) {
-    let userIDs = _.map(req.project.users, (u) => { return u._id })
+    let userIDs = _.map(req.$.project.users, (u) => { return u._id })
 
     User.find({ _id: { $in: userIDs }}, '-email').lean().exec((err, users) => {
       if (err) return next(err)
-      req.users = users
+      req.$.users = users
       next()
     })
-  },
-
-  returnProjectBoardsUsers(req, res, next) {
-    res.json({ data: { project: req.project, boards: req.boards, users: req.users }})
   },
 
   updateProject(req, res, next) {
     let r = req.body
 
     delete r.users // Protection
-    req.project.set(r)
+    req.$.project.set(r)
 
     if (r.add_user_id) {
       let user = { _id: r.add_user_id, admin: r.admin }
-      _.$upsert(req.project.users, { _id: r.add_user_id }, user)
+      _.$upsert(req.$.project.users, { _id: r.add_user_id }, user)
 
     } else if (r.remove_user_id) {
-      req.project.users.pull(r.remove_user_id)
+      req.$.project.users.pull(r.remove_user_id)
     }
 
-    req.project.save((err, project) => {
-      if (err) return next(err)
-      res.json({ data: project })
-    })
+    next()
   }
 }
 

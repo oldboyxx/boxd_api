@@ -33,7 +33,6 @@ _.mixin({ $toObjectId(str) {
   return mongoose.Types.ObjectId(str)
 }})
 
-_.mixin({ $args: _.partialRight })
 
 
 /*let users = [

@@ -1,16 +1,28 @@
 let router = require('express').Router()
-let { task } = require('../models')
+let { task, shared } = require('../models')
 
 router.post('/',
+  shared.getItem('board'),
+  shared.validateAccess(),
+  task.validateAccess,
   task.createTask
 )
 
 router.get('/:id',
-  task.getTask
+  shared.getItem('task'),
+  shared.getItem('board', '$.task.board_id'),
+  shared.validateAccess(),
+  shared.respond('omit:board')
 )
 
 router.put('/:id',
-  task.updateTask
+  shared.getItem('task'),
+  shared.getItem('board', '$.task.board_id'),
+  shared.validateAccess(),
+  task.validateAccess,
+  task.updateTask,
+  shared.saveItem('task'),
+  shared.respond('omit:board')
 )
 
 

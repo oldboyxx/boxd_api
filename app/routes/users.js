@@ -12,8 +12,8 @@ router.get('/',
 
 router.get('/:id',
   shared.validateAdmin,
-  _.$args(shared.getItem, 'user'),
-  shared.respond
+  shared.getItem('user'),
+  shared.respond()
 )
 
 router.put('/:id',

@@ -2,19 +2,24 @@ let router = require('express').Router()
 let { board, shared } = require('../models')
 
 router.post('/',
+  shared.getItem('project'),
+  shared.validateAccess(),
   board.createBoard
 )
 
 router.get('/:id',
-  board.getBoard,
-  shared.validateAccess,
+  shared.getItem('board'),
+  shared.validateAccess(),
   board.getTasks,
   board.getUsers,
-  board.returnBoardTasksUsers
+  shared.respond()
 )
 
 router.put('/:id',
-  board.updateBoard
+  shared.getItem('board'),
+  shared.validateAccess('admin'),
+  shared.saveItem('board'),
+  shared.respond()
 )
 
 

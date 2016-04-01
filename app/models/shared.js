@@ -10,27 +10,46 @@ let actions = {
     next(req.user.id === req.body.user_id ? null : _.$err('denied'))
   },
 
-  validateAccess(req, res, next, admin) {
-    let match = { _id: req.user.id }
-    if (admin) _.merge(match, { admin: true })
+  validateAccess(admin) {
+    return (req, res, next) => {
+      let match = { _id: req.user.id }
+      if (admin) _.merge(match, { admin: true })
 
-    let obj = req.project || req.board
+      let obj = req.$.project || req.$.board
 
-    let valid = _.find(obj.users, match)
-    next(valid ? null : _.$err('denied'))
+      let valid = _.find(obj.users, match)
+      next(valid ? null : _.$err('denied'))
+    }
   },
 
-  getItem(req, res, next, name) {
-    models[_.capitalize(name)].findById(req.body[name+'_id'], (err, item) => {
-      if (err) return next(err)
-      if (!item) return next(_.$err(name+':null'))
-      req.$[name] = item
-      next()
-    })
+  getItem(name, idPath) {
+    return (req, res, next) => {
+      let id = idPath ? _.get(req, idPath) : req.body[name+'_id']
+
+      models[_.capitalize(name)].findById(id, (err, item) => {
+        if (err) return next(err)
+        if (!item) return next(_.$err(name+':null'))
+        req.$[name] = item
+        next()
+      })
+    }
   },
 
-  respond(req, res) {
-    res.json({ data: req.$ })
+  saveItem(name) {
+    return (req, res, next) => {
+      req.$[name].save((err, item) => {
+        if (err) return next(err)
+        req.$[name] = item
+        next()
+      })
+    }
+  },
+
+  respond(omit) {
+    return (req, res, next) => {
+      if (omit) req.$ = _.omit(req.$, _.tail(omit.split(':')))
+      res.json({ data: req.$ })
+    }
   }
 }
 
