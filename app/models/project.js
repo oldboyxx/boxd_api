@@ -1,34 +1,6 @@
-let mongoose = require('mongoose')
-let Schema = mongoose.Schema
-let { userAdminSchema } = require('./_shared')
+let { Project, User, Board } = require('./models')
 
-let projectSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    maxlength: 100
-  },
-  desc: {
-    type: String,
-    maxlength: 500
-  },
-  avatar: {
-    type: String,
-    maxlength: 500
-  },
-
-  users: {
-    type: [userAdminSchema],
-    validate: {
-      validator(arr) { return !!_.find(arr, { admin: true }) },
-      message: 'You can\'t remove all admins from a project.'
-    }
-  }
-})
-
-let Project = mongoose.model('Project', projectSchema)
-
-let $ = {
+let actions = {
 
   createProject(req, res, next) {
     req.body.users = [{ _id: req.user.id, admin: true }]
@@ -52,93 +24,49 @@ let $ = {
     })
   },
 
-  getProject(req, res, next) {
-    Project.findById(req.params.id).lean().exec((err, project) => {
+  getBoards(req, res, next) {
+    let sel = { project_id: req.project._id, 'users._id': req.user.id }
+
+    Board.find(sel, 'title background project_id').lean().exec((err, boards) => {
       if (err) return next(err)
-      if (!project) return next(_.$err('project:null'))
-      req.project = project
+      req.boards = boards
       next()
     })
   },
 
-  validateAccess(req, res, next) {
-      let yep = _.find(req.project.users, { _id: req.user.id })
-      next(yep ? null : _.$err("denied"))
+  getUsers(req, res, next) {
+    let userIDs = _.map(req.project.users, (u) => { return u._id })
+
+    User.find({ _id: { $in: userIDs }}, '-email').lean().exec((err, users) => {
+      if (err) return next(err)
+      req.users = users
+      next()
     })
   },
 
-  getProject(req, res, next) {
-    let sel = { project_id: project._id, 'users._id': req.user.id }
+  returnProjectBoardsUsers(req, res, next) {
+    res.json({ data: { project: req.project, boards: req.boards, users: req.users }})
+  },
 
-    Board.find(sel, 'title background project_id').lean().exec((err, boards) => {
+  updateProject(req, res, next) {
+    let r = req.body
+
+    delete r.users // Protection
+    req.project.set(r)
+
+    if (r.add_user_id) {
+      let user = { _id: r.add_user_id, admin: r.admin }
+      _.$upsert(req.project.users, { _id: r.add_user_id }, user)
+
+    } else if (r.remove_user_id) {
+      req.project.users.pull(r.remove_user_id)
+    }
+
+    req.project.save((err, project) => {
       if (err) return next(err)
-
-      let userIDs = _.map(project.users, (u) => { return u._id })
-
-      User.find({ _id: { $in: userIDs }}, '-email').lean().exec((err, users) => {
-        if (err) return next(err)
-        res.json({ data: { project, boards, users }})
-      })
+      res.json({ data: project })
     })
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
-module.exports = { projectSchema, Project, $ }
+module.exports = actions

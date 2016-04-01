@@ -6,7 +6,7 @@ let app = express()
 let mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 let config = require('../config')
-let { errorHandling, authentication } = require('./middleware')
+let { requestConfig, authentication, errorHandling } = require('./middleware')
 
 mongoose.connect('mongodb://localhost/boxd_api')
 
@@ -17,6 +17,7 @@ app.use(bodyParser.json({ type: '*/*' }))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(require('cors')())
 
+app.use(requestConfig.configure)
 app.use(authentication.authenticateUser)
 app.use('/', require('./routes'))
 app.use(errorHandling.routeNotFound)

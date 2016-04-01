@@ -1,23 +1,24 @@
 let router = require('express').Router()
-let { $ } = require('../models/user')
+let { user, shared } = require('../models')
 
 router.post('/',
-  $.createUser
+  user.createUser
 )
 
 router.get('/',
-  $.validateAdmin,
-  $.getUsers
+  shared.validateAdmin,
+  user.getUsers
 )
 
 router.get('/:id',
-  $.validateAdmin,
-  $.getUser
+  shared.validateAdmin,
+  _.$args(shared.getItem, 'user'),
+  shared.respond
 )
 
 router.put('/:id',
-  $.validateSelf,
-  $.updateUser
+  shared.validateSelf,
+  user.updateUser
 )
 
 module.exports = router

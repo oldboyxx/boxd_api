@@ -33,6 +33,8 @@ _.mixin({ $toObjectId(str) {
   return mongoose.Types.ObjectId(str)
 }})
 
+_.mixin({ $args: _.partialRight })
+
 
 /*let users = [
   { _id: "first", admin: true },
@@ -40,12 +42,17 @@ _.mixin({ $toObjectId(str) {
   { _id: "third", admin: false }
 ]
 
-let find = !!_.find(users, { admin: true })
+let obj = {_id: "first"}
+_.merge(obj, {admin: true})
+
+console.log(obj)
+
+let find = !!_.find(users, obj)
 
 console.log(find)
+
+
 */
-
-
 
 
 

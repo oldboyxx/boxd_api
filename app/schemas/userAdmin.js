@@ -1,5 +1,4 @@
-let mongoose = require('mongoose')
-let Schema = mongoose.Schema
+let Schema = require('mongoose').Schema
 
 let userAdminSchema = new Schema({
   _id: {
@@ -14,4 +13,4 @@ let userAdminSchema = new Schema({
 
 userAdminSchema.index({ '_id': 1 })
 
-module.exports = { userAdminSchema }
+module.exports = userAdminSchema

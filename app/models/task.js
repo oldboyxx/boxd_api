@@ -1,55 +1,68 @@
-let mongoose = require('mongoose')
-let Schema = mongoose.Schema
-let { commentSchema } = require('./comment')
+let { Task } = require('./models')
 
-let taskSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    maxlength: 500
-  },
-  desc: {
-    type: String,
-    maxlength: 10000
-  },
-  labels: {
-    type: [String],
-    default: []
-  },
-  due_date: {
-    type: Date
-  },
-  position: {
-    type: Number,
-    required: true
+let actions = {
+
+  createTask(req, res, next) {
+    Board.findById(req.body.board_id).lean().exec((err, board) => {
+      if (err || !board) return next(err)
+
+      if (!_.find(board.users, { _id: req.user.id })) {
+        if (!_.find(board.lists, { _id: req.body.list_id })) {
+          return next(_.$err('denied'))
+        }
+      }
+
+      Task.create(req.body, (err, task) => {
+        if (err) return next(err)
+        res.json({ data: task })
+      })
+    })
   },
 
-  board_id: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
-  list_id: {
-    type: Schema.Types.ObjectId,
-    required: true
+  getTask(req, res, next) {
+    Task.findById(req.params.id).lean().exec((err, task) => {
+      if (err || !task) return next(err)
+
+      Board.findById(task.board_id).lean().exec((err, board) => {
+        if (err || !board) return next(err)
+
+        if (!_.find(board.users, { _id: req.user.id })) {
+          return next(_.$err('denied'))
+        }
+
+        res.json({ data: task })
+      })
+    })
   },
 
-  users: {
-    type: [String],
-    default: []
-  },
+  updateTask(req, res, next) {
+    let r = req.body
 
-  comments: {
-    type: [commentSchema],
-    default: []
-  },
-  comments_count: {
-    type: Number,
-    default: 0
+    Task.findById(req.params.id, (err, task) => {
+      if (err || !task) return next(err)
+
+      Board.findById(task.board_id).lean().exec((err, board) => {
+        if (err || !board) return next(err)
+
+        if (!_.find(board.users, { _id: req.user.id })) {
+          if (!_.find(board.lists, { _id: r.list_id })) {
+            return next(_.$err('denied'))
+          }
+        }
+
+        delete r.board_id // Protection
+        task.set(r)
+
+        task.save((err, task) => {
+          if (err) return next(err)
+          res.json({ data: task })
+        })
+      })
+    })
   }
-})
 
-taskSchema.index({ 'list_id': 1 })
+}
 
-let Task = mongoose.model('Task', taskSchema)
 
-module.exports = { taskSchema, Task }
+module.exports = actions
+
