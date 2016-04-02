@@ -1,4 +1,3 @@
-
 let actions = {
 
   createList(req, res, next) {

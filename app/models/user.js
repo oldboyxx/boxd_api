@@ -9,13 +9,6 @@ let actions = {
     })
   },
 
-  getUsers(req, res, next) {
-    User.find({}, (err, users) => {
-      if (err) return next(err)
-      res.json({ data: users })
-    })
-  },
-
   updateUser(req, res, next) {
     User.findByIdAndUpdate(req.params.id, req.body,
     { runValidators: true, new: true }, (err, user) => {

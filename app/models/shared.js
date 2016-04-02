@@ -22,24 +22,61 @@ let actions = {
     }
   },
 
-  getItem(name, idPath) {
+  createItem(model) {
     return (req, res, next) => {
-      let id = idPath ? _.get(req, idPath) : req.body[name+'_id']
-
-      models[_.capitalize(name)].findById(id, (err, item) => {
+      models[_.capitalize(model)].create(req.body, (err, item) => {
         if (err) return next(err)
-        if (!item) return next(_.$err(name+':null'))
-        req.$[name] = item
+        req.$[model] = item
         next()
       })
     }
   },
 
-  saveItem(name) {
+  getItems(model) {
     return (req, res, next) => {
-      req.$[name].save((err, item) => {
+      let args = req.qArgs || [{}]
+
+      models[_.capitalize(model)].find(...args).lean().exec((err, items) => {
         if (err) return next(err)
-        req.$[name] = item
+        req.$[model+'s'] = items
+        next()
+      })
+    }
+  },
+
+  getItem(model, idPath) {
+    return (req, res, next) => {
+      let id = idPath ? _.get(req, idPath) : req.body[model+'_id']
+
+      models[_.capitalize(model)].findById(id, (err, item) => {
+        if (err) return next(err)
+        if (!item) return next(_.$err(model+':null'))
+        req.$[model] = item
+        next()
+      })
+    }
+  },
+
+  updateUserAdmin(model) {
+    return (req, res, next) => {
+      let r = req.body
+
+      if (r.add_user_id) {
+        let user = { _id: r.add_user_id, admin: r.admin }
+        _.$upsert(req.$[model].users, { _id: r.add_user_id }, user)
+
+      } else if (r.remove_user_id) {
+        req.$[model].users.pull(r.remove_user_id)
+      }
+      next()
+    }
+  },
+
+  saveItem(model) {
+    return (req, res, next) => {
+      req.$[model].save((err, item) => {
+        if (err) return next(err)
+        req.$[model] = item
         next()
       })
     }
@@ -52,7 +89,6 @@ let actions = {
     }
   }
 }
-
 
 module.exports = actions
 

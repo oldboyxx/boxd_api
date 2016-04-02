@@ -1,25 +1,29 @@
 let router = require('express').Router()
-let { board, shared } = require('../models')
+let { board, shared: $ } = require('../models')
 
 router.post('/',
-  shared.getItem('project'),
-  shared.validateAccess(),
-  board.createBoard
+  $.getItem('project'),
+  $.validateAccess(),
+  board.prepForCreate,
+  $.createItem('board'),
+  $.respond('omit:project')
 )
 
 router.get('/:id',
-  shared.getItem('board'),
-  shared.validateAccess(),
-  board.getTasks,
-  board.getUsers,
-  shared.respond()
+  $.getItem('board'),
+  $.validateAccess(),
+  board.setQueryArgs('tasks'), $.getItems('task'),
+  board.setQueryArgs('users'), $.getItems('user'),
+  $.respond()
 )
 
 router.put('/:id',
-  shared.getItem('board'),
-  shared.validateAccess('admin'),
-  shared.saveItem('board'),
-  shared.respond()
+  $.getItem('board'),
+  $.validateAccess('admin'),
+  board.updateBoard,
+  $.updateUserAdmin('board'),
+  $.saveItem('board'),
+  $.respond()
 )
 
 
