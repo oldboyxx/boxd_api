@@ -4,16 +4,16 @@ let { list, shared: $ } = require('../models')
 router.post('/',
   $.getItem('board'),
   $.validateAccess(),
-  list.createList,
-  $.saveItem('board'),
+  $.createItem('list'),
   $.respond('omit:board')
 )
 
 router.put('/:id',
-  $.getItem('board'),
+  $.getItem('list'),
+  $.getItem('board', '$.list.board_id'),
   $.validateAccess(),
-  list.updateList,
-  $.saveItem('board'),
+  $.updateItem('list', 'omit:board_id'),
+  $.saveItem('list'),
   $.respond('omit:board')
 )
 

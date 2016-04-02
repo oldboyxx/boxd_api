@@ -2,7 +2,7 @@ let Schema = require('mongoose').Schema
 let userAdminSchema = require('./userAdmin')
 let listSchema = require('./list')
 
-let boardSchema = new Schema({
+let obj = {
   title: {
     type: String,
     required: true,
@@ -28,8 +28,13 @@ let boardSchema = new Schema({
     type: [listSchema],
     default: []
   }
-})
+}
+
+
+let boardSchema = new Schema(obj)
+let archievedBoardSchema = new Schema(obj)
 
 boardSchema.index({ 'project_id': 1 })
+archievedBoardSchema.index({ 'project_id': 1 })
 
-module.exports = boardSchema
+module.exports = { boardSchema, archievedBoardSchema }

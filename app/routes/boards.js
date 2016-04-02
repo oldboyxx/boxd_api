@@ -4,7 +4,7 @@ let { board, shared: $ } = require('../models')
 router.post('/',
   $.getItem('project'),
   $.validateAccess(),
-  board.prepForCreate,
+  $.addFirstAdmin,
   $.createItem('board'),
   $.respond('omit:project')
 )
@@ -12,6 +12,7 @@ router.post('/',
 router.get('/:id',
   $.getItem('board'),
   $.validateAccess(),
+  board.setQueryArgs('lists'), $.getItems('list'),
   board.setQueryArgs('tasks'), $.getItems('task'),
   board.setQueryArgs('users'), $.getItems('user'),
   $.respond()
@@ -20,7 +21,7 @@ router.get('/:id',
 router.put('/:id',
   $.getItem('board'),
   $.validateAccess('admin'),
-  board.updateBoard,
+  $.updateItem('board', 'omit:users:project_id'),
   $.updateUserAdmin('board'),
   $.saveItem('board'),
   $.respond()

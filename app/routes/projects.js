@@ -2,7 +2,7 @@ let router = require('express').Router()
 let { project, shared: $ } = require('../models')
 
 router.post('/',
-  project.prepForCreate,
+  $.addFirstAdmin,
   $.createItem('project'),
   $.respond()
 )
@@ -24,7 +24,7 @@ router.get('/:id',
 router.put('/:id',
   $.getItem('project'),
   $.validateAccess('admin'),
-  project.updateProject,
+  $.updateItem('project', 'omit:users'),
   $.updateUserAdmin('project'),
   $.saveItem('project'),
   $.respond()

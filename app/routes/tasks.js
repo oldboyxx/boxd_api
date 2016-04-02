@@ -4,9 +4,10 @@ let { task, shared: $ } = require('../models')
 router.post('/',
   $.getItem('board'),
   $.validateAccess(),
-  task.validateAccess,
+  $.getItem('list'),
+  task.validateListAccess,
   $.createItem('task'),
-  $.respond('omit:board')
+  $.respond('omit:board:list')
 )
 
 router.get('/:id',
@@ -20,12 +21,17 @@ router.put('/:id',
   $.getItem('task'),
   $.getItem('board', '$.task.board_id'),
   $.validateAccess(),
-  task.validateAccess,
-  task.updateTask,
+  $.getItem('list'),
+  task.validateListAccess,
+  $.updateItem('task', 'omit:board_id'),
+  task.update,
   $.saveItem('task'),
-  $.respond('omit:board')
+  $.respond('omit:board:list')
 )
 
+/*router.delete('/:id',
+  $.removeItem()
+)*/
 
 /*router.delete('/:id', (req, res, next) => {
   Board.findById(req.body.board_id).lean().exec((err, board) => {

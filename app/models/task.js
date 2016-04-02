@@ -1,15 +1,21 @@
 let actions = {
 
-  validateAccess(req, res, next) {
-    let valid = req.$.board.lists.id(req.body.list_id)
-    console.log(valid)
+  validateListAccess(req, res, next) {
+    if (!req.$.list) return next()
+    let valid = req.$.list.board_id.toString() === req.$.board._id.toString()
     next(valid ? null : _.$err('denied'))
   },
 
-  updateTask(req, res, next) {
-    delete req.body.board_id // Protection
-    req.$.task.set(req.body)
-    next()
+  update(req, res, next) {
+    let r = req.body
+
+    _.each(['label', 'users'], (type) => {
+      if (r['add_'+type]) {
+        req.$.task[type+'s'].addToSet(r['add_'+type])
+      } else if (r['remove_'+type]) {
+        req.$.task[type+'s'].pull(r['remove_'+type])
+      }
+    })
   }
 }
 

@@ -2,7 +2,8 @@ let router = require('express').Router()
 let { user, shared: $ } = require('../models')
 
 router.post('/',
-  user.createUser
+  $.createItem('user'),
+  $.respond()
 )
 
 router.get('/',
@@ -17,9 +18,11 @@ router.get('/:id',
   $.respond()
 )
 
-router.put('/:id',
-  $.validateSelf,
-  user.updateUser
+router.put('/settings',
+  $.getItem('user', 'user.id'),
+  $.updateItem('user'),
+  $.saveItem('user'),
+  $.respond()
 )
 
 module.exports = router

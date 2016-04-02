@@ -1,10 +1,5 @@
 let actions = {
 
-  prepForCreate(req, res, next) {
-    req.body.users = [{ _id: req.user.id, admin: true }]
-    next()
-  },
-
   setQueryArgs(name) {
     return (req, res, next) => {
       if (name === 'projects') {
@@ -17,12 +12,6 @@ let actions = {
       }
       next()
     }
-  },
-
-  updateProject(req, res, next) {
-    delete req.body.users // Protection
-    req.$.project.set(req.body)
-    next()
   }
 }
 

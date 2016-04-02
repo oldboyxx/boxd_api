@@ -1,8 +1,8 @@
 function authenticateUser(req, res, next) {
-  req.user = { id: "56fb30f801a911703cd3d9e2" }
+  req.user = { id: "56ffc25e8a654b0d3126bdaf" }
 
   let modIDs = [
-    "56fb30f801a911703cd3d9e2"
+    "56ffc25e8a654b0d3126bdaf"
   ]
 
   req.user.isAdmin = _.includes(modIDs, req.user.id)

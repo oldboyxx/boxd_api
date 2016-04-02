@@ -5,6 +5,18 @@ let errorHandlers = {
     })
 
     return { status: 400, errors }
+  },
+  MongoError(err) {
+    if ((err.code === 11000 || err.code === 10001) && /email/.test(err.message)) {
+      var status = 400
+      var errors = [{ message: 'This email already exists.' }]
+    } else {
+      var status = 500
+      var errors = [{ message: 'Internal Server Error' }]
+      console.error(err.stack)
+    }
+
+    return { status, errors }
   }
 }
 

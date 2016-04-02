@@ -2,12 +2,13 @@ let models = require('./models')
 
 let actions = {
 
-  validateAdmin(req, res, next) {
-    next(req.user.isAdmin ? null : _.$err('denied'))
+  addFirstAdmin(req, res, next) {
+    req.body.users = [{ _id: req.user.id, admin: true }]
+    next()
   },
 
-  validateSelf(req, res, next) {
-    next(req.user.id === req.body.user_id ? null : _.$err('denied'))
+  validateAdmin(req, res, next) {
+    next(req.user.isAdmin ? null : _.$err('denied'))
   },
 
   validateAccess(admin) {
@@ -47,6 +48,7 @@ let actions = {
   getItem(model, idPath) {
     return (req, res, next) => {
       let id = idPath ? _.get(req, idPath) : req.body[model+'_id']
+      if (!id) return next()
 
       models[_.capitalize(model)].findById(id, (err, item) => {
         if (err) return next(err)
@@ -68,6 +70,14 @@ let actions = {
       } else if (r.remove_user_id) {
         req.$[model].users.pull(r.remove_user_id)
       }
+      next()
+    }
+  },
+
+  updateItem(model, omit) {
+    return (req, res, next) => {
+      if (omit) req.body = _.omit(req.body, _.tail(omit.split(':')))
+      req.$[model].set(req.body)
       next()
     }
   },
