@@ -6,6 +6,7 @@ let errorHandlers = {
 
     return { status: 400, errors }
   },
+
   MongoError(err) {
     if ((err.code === 11000 || err.code === 10001) && /email/.test(err.message)) {
       var status = 400

@@ -16,8 +16,14 @@ let userSchema = new Schema({
     }
   },
   avatar: {
-    type: String,
-    maxlength: 500
+    provider: {
+      type: String,
+      maxlength: 100
+    },
+    url: {
+      type: String,
+      maxlength: 500
+    }
   },
   website: {
     type: String,
@@ -31,4 +37,4 @@ let userSchema = new Schema({
 
 userSchema.index({ email: 1 }, { unique: true })
 
-module.exports = { userSchema }
+module.exports = userSchema

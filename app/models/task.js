@@ -16,6 +16,12 @@ let actions = {
         req.$.task[type+'s'].pull(r['remove_'+type])
       }
     })
+  },
+
+  getUserIDs(req, res, next) {
+    let IDs = _.uniq(req.$.task.users.concat(_.map(req.$.task.comments, 'user')))
+    req.qArgs = [{ _id: { $in: IDs }}, '-email']
+    next()
   }
 }
 

@@ -1,17 +1,17 @@
 let config = {
+
   base: {
     port: process.env.PORT || 3000
   },
 
-  dev: {
+  development: {
+    host: 'http://localhost:3000'
   },
 
-  prod: {
+  production: {
   }
 }
 
-let cf = _.merge({}, config.base)
-cf.dev = _.merge({}, config.base, config.dev)
-cf.prod = _.merge({}, config.base, config.prod)
+let cf = _.merge(config.base, config[process.env.NODE_ENV], require('./secrets'))
 
 module.exports = cf

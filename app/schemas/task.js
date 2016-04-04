@@ -1,7 +1,7 @@
 let Schema = require('mongoose').Schema
 let commentSchema = require('./comment')
 
-let obj = {
+let taskSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -44,13 +44,15 @@ let obj = {
   comments_count: {
     type: Number,
     default: 0
-  }
-}
+  },
 
-let taskSchema = new Schema()
-let archievedTaskSchema = new Schema()
+  archieved: {
+    type: Boolean,
+    default: false,
+    required: true
+  }
+})
 
 taskSchema.index({ 'list_id': 1 })
-archievedTaskSchema.index({ 'list_id': 1 })
 
-module.exports = { taskSchema, archievedTaskSchema }
+module.exports = taskSchema

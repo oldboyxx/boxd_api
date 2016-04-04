@@ -70,6 +70,7 @@ let actions = {
       } else if (r.remove_user_id) {
         req.$[model].users.pull(r.remove_user_id)
       }
+
       next()
     }
   },

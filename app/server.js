@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'development'
+
 // All global vars are declared here
 GLOBAL._ = require('lodash')
 
@@ -5,6 +7,7 @@ let express = require('express')
 let app = express()
 let mongoose = require('mongoose')
 var bodyParser = require('body-parser')
+let passport = require('passport')
 let config = require('../config')
 let { requestConfig, authentication, errorHandling } = require('./middleware')
 
@@ -18,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(require('cors')())
 
 app.use(requestConfig.configure)
+app.use(passport.initialize())
 app.use(authentication.authenticateUser)
 app.use('/', require('./routes'))
 app.use(errorHandling.routeNotFound)

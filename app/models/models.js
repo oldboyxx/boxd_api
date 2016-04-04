@@ -1,10 +1,14 @@
 let mongoose = require('mongoose')
-let models = {}
 
-_.each(['user', 'project', 'board', 'list', 'task', 'archievedProject', 'archievedBoard', 'archievedList', 'archievedTask'], (name) => {
-  let cName = _.upperFirst(name)
-  let lName = /arch/.test(name) ? _.lowerFirst(name.replace('archieved', '')) : name
-  models[cName] = mongoose.model(cName, require('../schemas/'+lName)[name+'Schema'])
+mongoose.plugin(require('mongoose-timestamp'),  {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
+})
+
+let models = {}
+_.each(['user', 'project', 'board', 'list', 'task'], (name) => {
+  let uName = _.upperFirst(name)
+  models[uName] = mongoose.model(uName, require('../schemas/'+name))
 })
 
 module.exports = models

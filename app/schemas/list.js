@@ -1,6 +1,6 @@
 let Schema = require('mongoose').Schema
 
-let obj = {
+let listSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -13,13 +13,15 @@ let obj = {
   board_id: {
     type: Schema.Types.ObjectId,
     required: true
-  }
-}
+  },
 
-let listSchema = new Schema(obj)
-let archievedListSchema = new Schema(obj)
+  archieved: {
+    type: Boolean,
+    default: false,
+    required: true
+  }
+})
 
 listSchema.index({ 'board_id': 1 })
-archievedListSchema.index({ 'board_id': 1 })
 
-module.exports = { listSchema, archievedListSchema }
+module.exports = listSchema

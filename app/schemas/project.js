@@ -1,7 +1,7 @@
 let Schema = require('mongoose').Schema
 let userAdminSchema = require('./userAdmin')
 
-let obj = {
+let projectSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -22,10 +22,13 @@ let obj = {
       validator(arr) { return !!_.find(arr, { admin: true }) },
       message: 'You can\'t remove all admins from a project.'
     }
+  },
+
+  archieved: {
+    type: Boolean,
+    default: false,
+    required: true
   }
-}
+})
 
-let projectSchema = new Schema(obj)
-let archievedProjectSchema = new Schema(obj)
-
-module.exports = { projectSchema, archievedProjectSchema }
+module.exports = projectSchema
