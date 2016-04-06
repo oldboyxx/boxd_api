@@ -5,7 +5,10 @@ let config = {
   },
 
   development: {
-    host: 'http://localhost',
+    appURL: 'http://localhost:3000'
+  },
+
+  test: {
     appURL: 'http://localhost:3000'
   },
 

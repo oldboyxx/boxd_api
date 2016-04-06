@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'development'
-
 global._ = require('lodash')
 global.config = require('../config')
 global.request = require('supertest')(config.appURL)
