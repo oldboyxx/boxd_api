@@ -1,4 +1,4 @@
-function configure(req, res, next) {
+function prepare(req, res, next) {
 
   // Remove certain props
 
@@ -19,4 +19,4 @@ function configure(req, res, next) {
   next()
 }
 
-module.exports = { configure }
+module.exports = { prepare }

@@ -5,7 +5,8 @@ let config = {
   },
 
   development: {
-    host: 'http://localhost:3000'
+    host: 'http://localhost',
+    appURL: 'http://localhost:3000'
   },
 
   production: {

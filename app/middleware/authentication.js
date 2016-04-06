@@ -43,7 +43,7 @@ function getOrCreateUser(type, userData, callback) {
 passport.use(new GoogleStrategy({
     clientID: config.googleOAuthClientID,
     clientSecret: config.googleOAuthSecret,
-    callbackURL: config.host + '/auth/google/callback'
+    callbackURL: config.appURL + '/auth/google/callback'
   },
   (accessToken, refreshToken, profile, done) => {
     getOrCreateUser('google', profile, (err, user) => {
@@ -53,91 +53,38 @@ passport.use(new GoogleStrategy({
 ))
 
 /**
-* Create and issue JWTokens
+* Create and validate JWTokens
 */
 
 function createJWToken(req, res, next) {
+  if (!req.user) return next(_.$err("Can't create JWToken, user missing.", 401))
 
-  let payload = {
-    userID: req.user.id,
-    name: req.user.name,
-    avatar: req.user.avatar
-  }
+  let payload = _.pick(req.user, ['id', 'email', 'name', 'avatar'])
 
-  jwt.sign(payload, config.JWTSecret, {}, (token) => {
+  jwt.sign(payload, config.JWTSecret, { expiresIn: '30d' }, (token) => {
     req.JWToken = token
     next()
   })
 }
 
+/*function validateTokenAndSetUser(req, res, next) {
+  let token = req.query.jwtoken || req.body.jwtoken
+  if (!token) return next(_.$err('denied:jwtoken:missing', 401))
 
+  jwt.verify(token, config.JWTSecret, (err, userData) => {
+    if (err) return next(_.$err('denied:jwtoken:invalid', 401))
+    req.user = userData
 
+    req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
 
+    next()
+  })
+}*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function authenticateUser(req, res, next) {
-  /*
-  req.user = { id: "56ffc25e8a654b0d3126bdaf" }
-
-  let modIDs = [
-    "56ffc25e8a654b0d3126bdaf"
-  ]
-
-  req.user.isAdmin = _.includes(modIDs, req.user.id)
-  */
+function validateTokenAndSetUser(req, res, next) {
+  req.user = { id: '57030981f86fcd77a1b64dba', email: 'ivor.reic@gmail.com' }
+  req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
   next()
 }
 
-module.exports = { authenticateUser, createJWToken }
+module.exports = { createJWToken, validateTokenAndSetUser }
