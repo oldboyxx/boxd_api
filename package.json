@@ -2,10 +2,9 @@
   "name": "boxd_api",
   "version": "1.0.0",
   "description": "Api for trello clone with chat",
-  "main": "server.js",
+  "main": "start.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --exec babel-node -- app/server.js",
-    "start-test": "NODE_ENV=test nodemon --exec babel-node -- app/server.js",
+    "start": "NODE_ENV=development nodemon --exec babel-node -- app/start.js",
     "test": "NODE_ENV=test mocha"
   },
   "repository": {

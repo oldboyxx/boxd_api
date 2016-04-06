@@ -1,6 +1,3 @@
-global._ = require('lodash')
-global.config = require('../config')
-global.request = require('supertest')(config.appURL)
-global.sinon = require('sinon')
-global.chai = require('chai')
-global.expect = global.chai.expect
+before('connect to and reset test database', function(done) {
+  mongoose.connect(config.dbPath, done)
+})

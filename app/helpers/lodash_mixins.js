@@ -1,5 +1,3 @@
-let mongoose = require('mongoose')
-
 _.mixin({ $err(msg, status=500) {
   if (msg === 'denied') {
     msg = "You aren't authorized to access this route."
@@ -27,8 +25,4 @@ _.mixin({ $upsert(arr, matchVal, newVal) {
   } else {
     arr.push(newVal)
   }
-}})
-
-_.mixin({ $toObjectId(str) {
-  return mongoose.Types.ObjectId(str)
 }})
