@@ -127,7 +127,7 @@ function batchInsert({ batchSize=3, times=1, log=false }={}, callback) {
       if (i === modelNames.length-1) {
         if (log) console.timeEnd('done in')
         if (--times) {
-          _.delay(batchInsert, 5, { batchSize, times }, callback)
+          _.delay(batchInsert, 5, { batchSize, times, log }, callback)
         } else {
           if (callback) callback(null, seeds, objectCount)
         }
