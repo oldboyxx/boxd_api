@@ -1,11 +1,6 @@
 let router = require('express').Router()
 let { user, shared: $ } = require('../models')
 
-router.post('/',
-  $.createItem('user'),
-  $.respond()
-)
-
 router.get('/',
   $.validateAdmin,
   $.getItems('user'),

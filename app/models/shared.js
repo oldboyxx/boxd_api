@@ -17,6 +17,7 @@ let actions = {
       if (admin) _.merge(match, { admin: true })
 
       let obj = req.$.project || req.$.board
+      if (!obj) return next(_.$err('Validation object missing', 400))
 
       let valid = _.find(obj.users, match)
       next(valid ? null : _.$err('denied'))
@@ -45,10 +46,10 @@ let actions = {
     }
   },
 
-  getItem(model, idPath) {
+  getItem(model, idPath, notRequired) {
     return (req, res, next) => {
       let id = idPath ? _.get(req, idPath) : req.body[model+'_id']
-      if (!id) return next()
+      if (!id && notRequired) return next()
 
       models[_.capitalize(model)].findById(id, (err, item) => {
         if (err) return next(err)

@@ -9,13 +9,14 @@ let actions = {
   update(req, res, next) {
     let r = req.body
 
-    _.each(['label', 'users'], (type) => {
+    _.each(['label', 'user'], (type) => {
       if (r['add_'+type]) {
         req.$.task[type+'s'].addToSet(r['add_'+type])
       } else if (r['remove_'+type]) {
         req.$.task[type+'s'].pull(r['remove_'+type])
       }
     })
+    next()
   },
 
   getUserIDs(req, res, next) {

@@ -53,38 +53,37 @@ passport.use(new GoogleStrategy({
 ))
 
 /**
-* Create and validate JWTokens
+* Create, validate JWTokens and set current user
 */
 
-function createJWToken(req, res, next) {
-  if (!req.user) return next(_.$err("Can't create JWToken, user missing.", 401))
-
-  let payload = _.pick(req.user, ['id', 'email', 'name', 'avatar'])
-
-  jwt.sign(payload, config.JWTSecret, { expiresIn: '30d' }, (token) => {
-    req.JWToken = token
-    next()
-  })
+function createJWToken(user) {
+  let payload = _.pick(user, ['id', 'email'])
+  return jwt.sign(payload, config.JWTSecret, { expiresIn: '30d' })
 }
 
-/*function validateTokenAndSetUser(req, res, next) {
-  let token = req.query.jwtoken || req.body.jwtoken
+function validateTokenAndSetUser(req, res, next) {
+  let token = req.headers['x-jwtoken']
   if (!token) return next(_.$err('denied:jwtoken:missing', 401))
 
   jwt.verify(token, config.JWTSecret, (err, userData) => {
     if (err) return next(_.$err('denied:jwtoken:invalid', 401))
     req.user = userData
-
     req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
 
-    next()
-  })
-}*/
+    if (!req.query.current_user) return next()
 
-function validateTokenAndSetUser(req, res, next) {
+    User.findById(req.user.id, (err, user) => {
+      if (err) return next(err)
+      req.$.current_user = user
+      next()
+    })
+  })
+}
+
+/*function validateTokenAndSetUser(req, res, next) {
   req.user = { id: '57030981f86fcd77a1b64dba', email: 'ivor.reic@gmail.com' }
   req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
   next()
-}
+}*/
 
 module.exports = { createJWToken, validateTokenAndSetUser }

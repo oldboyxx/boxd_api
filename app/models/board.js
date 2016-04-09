@@ -4,11 +4,11 @@ let actions = {
     return (req, res, next) => {
 
       if (name === 'lists') {
-        let archieved = !!req.body.archieved_lists
+        let archieved = !!req.query.archieved_lists
         req.qArgs = [{ board_id: req.$.board._id, archieved },  '-created_at -updated_at']
 
       } else if (name === 'tasks') {
-        let archieved = !!req.body.archieved_tasks
+        let archieved = !!req.query.archieved_tasks
         req.qArgs = [{ list_id: { $in: _.map(req.$.lists, '_id') }, archieved }, '-desc -comments -created_at -updated_at']
 
       } else if (name === 'users') {

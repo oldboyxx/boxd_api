@@ -11,18 +11,16 @@ router.post('/',
 
 router.put('/:id',
   $.getItem('task'),
-  $.getItem('board', '$.task.board_id'),
-  $.validateAccess(),
   comment.updateComment,
-  $.respond('omit:board:task')
+  $.saveItem('task'),
+  $.respond('omit:task')
 )
 
 router.delete('/:id',
   $.getItem('task'),
-  $.getItem('board', '$.task.board_id'),
-  $.validateAccess(),
   comment.deleteComment,
-  $.respond('omit:board:task')
+  $.saveItem('task'),
+  $.respond('omit:task')
 )
 
 module.exports = router
