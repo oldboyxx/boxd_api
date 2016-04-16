@@ -24,7 +24,7 @@ describe('ANY /Protected route', () => {
 
     request.get('/projects')
       .set(util.token(seeds.users[0]))
-      .query({ current_user: true })
+      .query({ get_current_user: true })
       .expect(200)
       .expect(res => {
         expect(res.body.data.current_user.email).to.be.a('string')

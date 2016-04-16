@@ -17,5 +17,4 @@ if (process.env.NODE_ENV === 'development') {
 mongoose.connect(config.dbPath, (err) => {
   if (err) throw err
   require('./app').start()
-  /*require('../test/seed_db')*/
 })

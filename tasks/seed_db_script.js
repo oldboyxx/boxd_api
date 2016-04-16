@@ -111,11 +111,11 @@ function batchBuild(seedSize=3, multiplier=4) {
 let modelNames = _.map(_.keys(models), _.lowerFirst)
 let objectCount = _.fromPairs(_.map(modelNames, (n) => { return [n+'s', 0] }))
 
-function batchInsert({ batchSize=3, times=1, log=false }={}, callback) {
+function batchInsert({ batchSize=3, multiplier=4, times=1, log=false }={}, callback) {
   if (log) console.log(times+'-----------')
   if (log) console.time('done in')
 
-  let seeds = batchBuild(batchSize)
+  let seeds = batchBuild(batchSize, multiplier)
 
   _.each(modelNames, (name, i) => {
     models[_.upperFirst(name)].create(seeds[name+'s'], (err, items) => {
@@ -127,7 +127,7 @@ function batchInsert({ batchSize=3, times=1, log=false }={}, callback) {
       if (i === modelNames.length-1) {
         if (log) console.timeEnd('done in')
         if (--times) {
-          _.delay(batchInsert, 5, { batchSize, times, log }, callback)
+          _.delay(batchInsert, 5, { batchSize, multiplier, times, log }, callback)
         } else {
           if (callback) callback(null, seeds, objectCount)
         }
@@ -135,14 +135,6 @@ function batchInsert({ batchSize=3, times=1, log=false }={}, callback) {
     })
   })
 }
-
-/*dropDatabase()
-
-batchInsert({ batchSize: 5, times: 10000 }, (err, objects, objectCount) => {
-  if (err) throw err
-  console.log(objects.tasks[0])
-  console.log(objectCount)
-})*/
 
 module.exports = {
   dropDatabase,

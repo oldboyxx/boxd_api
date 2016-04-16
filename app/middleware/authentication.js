@@ -69,21 +69,22 @@ function validateTokenAndSetUser(req, res, next) {
     if (err) return next(_.$err('denied:jwtoken:invalid', 401))
     req.user = userData
     req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
-
-    if (!req.query.current_user) return next()
-
-    User.findById(req.user.id, (err, user) => {
-      if (err) return next(err)
-      req.$.current_user = user
-      next()
-    })
+    next()
   })
 }
 
-/*function validateTokenAndSetUser(req, res, next) {
-  req.user = { id: '57030981f86fcd77a1b64dba', email: 'ivor.reic@gmail.com' }
-  req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
-  next()
-}*/
+function returnCurrentUser(req, res, next) {
+  if (!req.query.get_current_user) return next()
 
-module.exports = { createJWToken, validateTokenAndSetUser }
+  User.findById(req.user.id, (err, user) => {
+    if (err) return next(err)
+    req.$.current_user = user
+    next()
+  })
+}
+
+module.exports = {
+  createJWToken,
+  validateTokenAndSetUser,
+  returnCurrentUser
+}

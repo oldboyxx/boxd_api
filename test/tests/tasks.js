@@ -38,7 +38,7 @@ describe('GET /tasks/:id', () => {
         let data = res.body.data
         expect(data.task._id).to.equal(seedTask.id)
         expect(data.task.labels).to.be.an('array').and.not.be.empty
-        expect(data.task.users).to.be.an('array').and.not.be.empty
+        expect(data.task.users).to.be.an('array')
         expect(data.task.comments).to.be.an('array').and.not.be.empty
         expect(data.task.comments_count).to.be.a('number')
         expect(data.users).to.be.an('array').and.not.be.empty
