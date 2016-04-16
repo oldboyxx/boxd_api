@@ -14,10 +14,10 @@ function dropDatabase() {
 * Build objects
 */
 
-function batchBuild(seedSize=3) {
+function batchBuild(seedSize=3, multiplier=4) {
   let seeds = {}
 
-  let userCount = seedSize < 6 ? 6 : seedSize
+  let userCount = seedSize < 12 ? 12 : seedSize
   seeds.users = _.times(userCount, () => {
     return new models.User({
       name: f.name.findName(),
@@ -32,7 +32,7 @@ function batchBuild(seedSize=3) {
   let projectCount = seedSize < 2 ? 2 : seedSize
   seeds.projects = _.times(projectCount, (i) => {
 
-    let users = _.map(_.sampleSize(seeds.users, 4), (user, j) => {
+    let users = _.map(_.sampleSize(seeds.users, 5), (user, j) => {
       return { _id: user._id, admin: !!j }
     })
 
@@ -44,7 +44,7 @@ function batchBuild(seedSize=3) {
   })
 
   seeds.boards = _.flatMap(seeds.projects, (project) => {
-    return _.times(4, (i) => {
+    return _.times(multiplier, (i) => {
 
       let users = _.map(project.users, (user, j) => {
         return { _id: user._id, admin: !!j }
@@ -60,7 +60,7 @@ function batchBuild(seedSize=3) {
   })
 
   seeds.lists = _.flatMap(seeds.boards, (board) => {
-    return _.times(4, (i) => {
+    return _.times(multiplier, (i) => {
       return new models.List({
         title: f.commerce.department(),
         position: i,
@@ -71,12 +71,12 @@ function batchBuild(seedSize=3) {
   })
 
   seeds.tasks = _.flatMap(seeds.lists, (list) => {
-    return _.times(4, (i) => {
+    return _.times(multiplier, (i) => {
 
       let labels = _.sampleSize(['red', 'blue', 'green', 'yellow'], 2)
 
       let board = _.find(seeds.boards, { _id: list.board_id })
-      let users = [_.sample(board.users)._id]
+      let users = _.map(_.sampleSize(board.users, _.random(0,2)), '_id')
 
       let comments = _.times(2, () => {
         return {
