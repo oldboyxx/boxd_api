@@ -1,4 +1,5 @@
-let mongoose = require('mongoose')
+// Don't worry, lodash is the ONLY global var
+global._ = require('lodash')
 
 _.mixin({ $err(msg, status=500) {
   if (msg === 'denied') {
@@ -29,6 +30,7 @@ _.mixin({ $upsert(arr, matchVal, newVal) {
   }
 }})
 
+let mongoose = require('mongoose')
 _.mixin({ $toObjId(id) {
   return mongoose.Types.ObjectId(id)
 }})

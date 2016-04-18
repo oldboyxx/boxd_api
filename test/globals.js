@@ -1,5 +1,4 @@
-global._ = require('lodash')
-require('../app/helpers/lodash_mixins')
+require('../app/utils/lodash')
 
 global.config = require('../config')
 

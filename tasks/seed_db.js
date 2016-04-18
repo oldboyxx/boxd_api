@@ -1,5 +1,4 @@
-GLOBAL._ = require('lodash')
-require('../app/helpers/lodash_mixins')
+require('../app/utils/lodash')
 
 let mongoose = require('mongoose')
 let config = require('../config')

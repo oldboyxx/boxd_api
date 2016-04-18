@@ -1,7 +1,4 @@
-// Set lodash as the ONLY global var
-
-GLOBAL._ = require('lodash')
-require('./helpers/lodash_mixins')
+require('./utils/lodash')
 
 let mongoose = require('mongoose')
 let config = require('../config')
