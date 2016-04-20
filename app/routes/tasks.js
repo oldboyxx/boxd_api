@@ -2,9 +2,9 @@ let router = require('express').Router()
 let { task, shared: $ } = require('../models')
 
 router.post('/',
-  $.getItem('board'),
-  $.validateAccess(),
   $.getItem('list'),
+  $.getItem('board', '$.list.board_id'),
+  $.validateAccess(),
   task.validateListAccess,
   $.createItem('task'),
   $.respond('omit:board:list')

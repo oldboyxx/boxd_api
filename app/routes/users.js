@@ -13,6 +13,11 @@ router.get('/:id',
   $.respond()
 )
 
+router.get('/settings',
+  $.getItem('user', 'user.id'),
+  $.respond()
+)
+
 router.put('/settings',
   $.getItem('user', 'user.id'),
   $.updateItem('user'),

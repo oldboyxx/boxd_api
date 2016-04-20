@@ -1,3 +1,5 @@
+let { Board } = require('./models')
+
 let actions = {
 
   setQueryArgs(name) {
@@ -19,6 +21,16 @@ let actions = {
       }
       next()
     }
+  },
+
+  removeUserFromBoards(req, res, next) {
+    let r = req.body
+    if (!r.remove_user_id) return next()
+
+    let sel = { project_id: req.$.project._id, 'users._id': r.remove_user_id }
+    let cmd = { $pull: { users: { _id: r.remove_user_id }}}
+
+    Board.update(sel, cmd, { multi: true }, next)
   }
 }
 

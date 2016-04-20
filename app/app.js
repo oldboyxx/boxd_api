@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(require('cors')())
 
 app.use(requestConfig.prepare)
-app.use(development.becomeRandomUser)
+app.use(development.becomeDevUser)
 
 app.use(/^((?!^\/auth\/).)*$/,
   authentication.validateTokenAndSetUser,

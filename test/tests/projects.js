@@ -69,8 +69,9 @@ describe('PUT /projects/:id', () => {
       .end(done)
   })
 
-  it('should update project when user is admin', (done) => {
+  it('should update project when user is admin && if a user is removed from project, he should be removed from all boards aswell', (done) => {
 
+    let { Board } = require('../../app/models/models')
     let { seedProject, seedUser } = util.getObjAndUser('project', true, true)
 
     let updateData = {
@@ -84,8 +85,44 @@ describe('PUT /projects/:id', () => {
       .expect(200)
       .expect(res => {
         expect(res.body.data.project.title).to.contain('updated')
-        seedUser = _.find(res.body.data.project.users, { _id: seedUser.id })
-        expect(seedUser).to.not.exist
-      }).end(done)
+        let user = _.find(res.body.data.project.users, { _id: seedUser.id })
+        expect(user).to.not.exist
+
+      }).end(() => {
+        let sel = { project_id: seedProject.id, 'users._id': seedUser.id }
+
+        Board.find(sel, (err, boards) => {
+          if (err) done(err)
+          expect(boards).to.be.empty
+          done()
+        })
+      })
   })
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -26,6 +26,7 @@ router.put('/:id',
   $.validateAccess('admin'),
   $.updateItem('project', 'omit:users'),
   $.updateUserAdmin('project'),
+  project.removeUserFromBoards,
   $.saveItem('project'),
   $.respond()
 )

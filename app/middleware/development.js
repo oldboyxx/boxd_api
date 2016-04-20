@@ -1,8 +1,8 @@
 let { createJWToken } = require('./authentication')
 let { User, Project } = require('../models/models')
 
-function becomeRandomUser(req, res, next) {
-  if (process.env.NODE_ENV !== 'development' || !req.query.become_random_user) return next()
+function becomeDevUser(req, res, next) {
+  if (process.env.NODE_ENV !== 'development' || !req.query.become_dev_user) return next()
 
   Project.findOne({ archieved: false }, (err, project) => {
     if (!project) return next(_.$err('Database contains no projects', 404))
@@ -15,4 +15,4 @@ function becomeRandomUser(req, res, next) {
   })
 }
 
-module.exports = { becomeRandomUser }
+module.exports = { becomeDevUser }
