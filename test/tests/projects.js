@@ -76,7 +76,7 @@ describe('PUT /projects/:id', () => {
 
     let updateData = {
       title: 'updated',
-      remove_user_id: seedUser.id
+      remove_user: seedUser.id
     }
 
     request.put('/projects/'+seedProject.id)

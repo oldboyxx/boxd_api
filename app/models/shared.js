@@ -64,12 +64,12 @@ let actions = {
     return (req, res, next) => {
       let r = req.body
 
-      if (r.add_user_id) {
-        let user = { _id: r.add_user_id, admin: r.admin }
-        _.$upsert(req.$[model].users, { _id: r.add_user_id }, user)
+      if (r.add_user) {
+        let user = { _id: r.add_user, admin: r.admin }
+        _.$upsert(req.$[model].users, { _id: r.add_user }, user)
 
-      } else if (r.remove_user_id) {
-        req.$[model].users.pull(r.remove_user_id)
+      } else if (r.remove_user) {
+        req.$[model].users.pull(r.remove_user)
       }
 
       next()
