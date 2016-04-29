@@ -5,15 +5,18 @@ let projectSchema = new Schema({
   title: {
     type: String,
     required: true,
-    maxlength: 100
+    maxlength: 100,
+    trim: true
   },
   desc: {
     type: String,
-    maxlength: 500
+    maxlength: 500,
+    trim: true
   },
   avatar: {
     type: String,
-    maxlength: 500
+    maxlength: 500,
+    trim: true
   },
 
   users: {

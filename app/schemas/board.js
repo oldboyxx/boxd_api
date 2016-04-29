@@ -5,11 +5,13 @@ let boardSchema = new Schema({
   title: {
     type: String,
     required: true,
-    maxlength: 100
+    maxlength: 100,
+    trim: true
   },
   background: {
     type: String,
-    maxlength: 500
+    maxlength: 500,
+    trim: true
   },
 
   project_id: {

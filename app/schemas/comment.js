@@ -4,11 +4,13 @@ let commentSchema = new Schema({
   content: {
     type: String,
     required: true,
-    maxlength: 10000
+    maxlength: 10000,
+    trim: true
   },
   user: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   }
 })
 

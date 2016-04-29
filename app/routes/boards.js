@@ -11,6 +11,7 @@ router.post('/',
 
 router.get('/:id',
   $.getItem('board'),
+  $.getItem('project', '$.board.project_id'),
   $.validateAccess(),
   board.setQueryArgs('lists'), $.getItems('list'),
   board.setQueryArgs('tasks'), $.getItems('task'),

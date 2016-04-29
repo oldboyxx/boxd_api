@@ -16,7 +16,7 @@ let actions = {
       let match = { _id: req.user.id }
       if (admin) _.merge(match, { admin: true })
 
-      let obj = req.$.project || req.$.board
+      let obj = req.$.board || req.$.project // board must be first
       if (!obj) return next(_.$err('Validation object missing', 400))
 
       let valid = _.find(obj.users, match)

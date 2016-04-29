@@ -23,7 +23,7 @@ describe('CREATE /boards', () => {
 })
 
 describe('GET /board/:id', () => {
-  it('should return single board with lists, tasks and users', (done) => {
+  it('should return single board with project, lists, tasks and users', (done) => {
 
     let { seedBoard, seedUser } = util.getObjAndUser('board')
 
@@ -33,6 +33,7 @@ describe('GET /board/:id', () => {
       .expect(res => {
         let data = res.body.data
         expect(data.board._id).to.equal(seedBoard.id)
+        expect(data.project).to.be.an('object').and.not.be.empty
         expect(data.lists).to.be.an('array').and.not.be.empty
         expect(data.tasks).to.be.an('array').and.not.be.empty
         expect(data.users).to.be.an('array').and.not.be.empty

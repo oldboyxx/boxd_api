@@ -4,12 +4,14 @@ let userSchema = new Schema({
   name: {
     type: String,
     required: true,
-    maxlength: 40
+    maxlength: 40,
+    trim: true
   },
   email: {
     type: String,
     required: true,
     maxlength: 100,
+    trim: true,
     validate: {
       validator(v) { return /.+@.+/.test(v) },
       message: 'Please enter a valid email address.'
@@ -18,20 +20,24 @@ let userSchema = new Schema({
   avatar: {
     provider: {
       type: String,
-      maxlength: 100
+      maxlength: 100,
+      trim: true
     },
     url: {
       type: String,
-      maxlength: 500
+      maxlength: 500,
+      trim: true
     }
   },
   website: {
     type: String,
-    maxlength: 100
+    maxlength: 100,
+    trim: true
   },
   bio: {
     type: String,
-    maxlength: 500
+    maxlength: 500,
+    trim: true
   }
 })
 

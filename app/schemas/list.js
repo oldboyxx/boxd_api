@@ -4,7 +4,8 @@ let listSchema = new Schema({
   title: {
     type: String,
     required: true,
-    maxlength: 100
+    maxlength: 100,
+    trim: true
   },
   position: {
     type: Number,
