@@ -6,6 +6,7 @@ router.post('/',
   $.getItem('board', '$.list.board_id'),
   $.validateAccess(),
   task.validateListAccess,
+  task.getBoardID,
   $.createItem('task'),
   $.respond('omit:board:list')
 )
@@ -25,7 +26,7 @@ router.put('/:id',
   $.getItem('list', 'body.list_id', 'notRequired'),
   task.validateListAccess,
   $.updateItem('task', 'omit:board_id:users:labels:comments:comments_count'),
-  task.update,
+  task.updateArrays,
   $.saveItem('task'),
   $.respond('omit:board:list')
 )

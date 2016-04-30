@@ -6,7 +6,12 @@ let actions = {
     next(valid ? null : _.$err('denied'))
   },
 
-  update(req, res, next) {
+  getBoardID(req, res, next) {
+    req.body.board_id = req.$.board.id
+    next()
+  },
+
+  updateArrays(req, res, next) {
     let r = req.body
 
     _.each(['label', 'user'], (type) => {
