@@ -5,11 +5,13 @@ let config = {
   },
 
   development: {
-    appURL: 'http://localhost:3000'
+    appURL: 'http://localhost:3000',
+    devEmail: 'dank@memer.com'
   },
 
   test: {
-    appURL: 'http://localhost:3000'
+    appURL: 'http://localhost:3000',
+    devEmail: 'dank@memer.com'
   },
 
   production: {

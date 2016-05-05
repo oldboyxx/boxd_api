@@ -21,8 +21,7 @@ let taskSchema = new Schema({
     type: Date
   },
   position: {
-    type: Number,
-    required: true
+    type: Number
   },
 
   board_id: {

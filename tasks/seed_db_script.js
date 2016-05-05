@@ -1,5 +1,6 @@
 let mongoose = require('mongoose')
 let f = require('faker')
+let config = require('../config')
 let models = require('../app/models/models')
 
 /**
@@ -14,14 +15,24 @@ function dropDatabase() {
 * Build objects
 */
 
-function batchBuild(seedSize=3, multiplier=4) {
+let defaultSeedSize = {
+  users: 10,
+  projects: 3,
+  boards: 4,
+  lists: 5,
+  tasks: 5
+}
+
+let devEmail = config.devEmail
+
+function batchBuild(size={}) {
+  size = _.assign(defaultSeedSize, size)
   let seeds = {}
 
-  let userCount = seedSize < 12 ? 12 : seedSize
-  seeds.users = _.times(userCount, () => {
+  seeds.users = _.times(size.users, (i) => {
     return new models.User({
       name: f.name.findName(),
-      email: _.random(99999999)+f.internet.email(),
+      email: i ? _.random(99999999)+f.internet.email() : devEmail,
       avatar: {
         provider: 'google',
         url: f.internet.avatar()
@@ -29,11 +40,14 @@ function batchBuild(seedSize=3, multiplier=4) {
     })
   })
 
-  let projectCount = seedSize < 2 ? 2 : seedSize
-  seeds.projects = _.times(projectCount, (i) => {
+  seeds.projects = _.times(size.projects, (i) => {
 
-    let users = _.map(_.sampleSize(seeds.users, 5), (user, j) => {
-      return { _id: user._id, admin: !!j }
+    let sample = _.sampleSize(seeds.users, 5)
+    let devUser = _.find(seeds.users, { email: devEmail })
+    sample.push(devUser)
+
+    let users = _.map(_.uniq(sample), (user, j) => {
+      return { _id: user._id, admin: true }
     })
 
     return new models.Project({
@@ -44,10 +58,10 @@ function batchBuild(seedSize=3, multiplier=4) {
   })
 
   seeds.boards = _.flatMap(seeds.projects, (project) => {
-    return _.times(multiplier, (i) => {
+    return _.times(size.boards, (i) => {
 
       let users = _.map(project.users, (user, j) => {
-        return { _id: user._id, admin: !!j }
+        return { _id: user._id, admin: true }
       })
 
       return new models.Board({
@@ -60,10 +74,10 @@ function batchBuild(seedSize=3, multiplier=4) {
   })
 
   seeds.lists = _.flatMap(seeds.boards, (board) => {
-    return _.times(multiplier, (i) => {
+    return _.times(size.lists, (i) => {
       return new models.List({
         title: f.commerce.department(),
-        position: i,
+        position: i+1,
         board_id: board._id,
         archieved: !i
       })
@@ -71,7 +85,7 @@ function batchBuild(seedSize=3, multiplier=4) {
   })
 
   seeds.tasks = _.flatMap(seeds.lists, (list) => {
-    return _.times(multiplier, (i) => {
+    return _.times(size.tasks, (i) => {
 
       let labels = _.sampleSize(['red', 'blue', 'green', 'yellow'], 2)
 
@@ -88,9 +102,9 @@ function batchBuild(seedSize=3, multiplier=4) {
       let comments_count = _.size(comments)
 
       return new models.Task({
-        title: f.address.city(),
+        title: i%2 ? f.hacker.phrase() : f.commerce.productName(),
         labels,
-        position: i,
+        position: i+1,
         board_id: list.board_id,
         list_id: list._id,
         users,
@@ -111,11 +125,11 @@ function batchBuild(seedSize=3, multiplier=4) {
 let modelNames = _.map(_.keys(models), _.lowerFirst)
 let objectCount = _.fromPairs(_.map(modelNames, (n) => { return [n+'s', 0] }))
 
-function batchInsert({ batchSize=3, multiplier=4, times=1, log=false }={}, callback) {
+function batchInsert({ size={}, times=1, log=false }={}, callback) {
   if (log) console.log(times+'-----------')
   if (log) console.time('done in')
 
-  let seeds = batchBuild(batchSize, multiplier)
+  let seeds = batchBuild(size)
 
   _.each(modelNames, (name, i) => {
     models[_.upperFirst(name)].create(seeds[name+'s'], (err, items) => {
@@ -127,7 +141,7 @@ function batchInsert({ batchSize=3, multiplier=4, times=1, log=false }={}, callb
       if (i === modelNames.length-1) {
         if (log) console.timeEnd('done in')
         if (--times) {
-          _.delay(batchInsert, 5, { batchSize, multiplier, times, log }, callback)
+          _.delay(batchInsert, 5, { size, times, log }, callback)
         } else {
           if (callback) callback(null, seeds, objectCount)
         }
