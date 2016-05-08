@@ -69,6 +69,21 @@ describe('PUT /projects/:id', () => {
       .end(done)
   })
 
+  it('should remove current user from project even if user is not admin', (done) => {
+
+    let { seedProject, seedUser } = util.getObjAndUser('project', false, true)
+
+    request.put('/projects/'+seedProject.id)
+      .set(util.token(seedUser))
+      .send({ remove_user: seedUser.id })
+      .expect(200)
+      .expect(res => {
+        let user = _.find(res.body.data.project.users, { _id: seedUser.id })
+        expect(user).to.not.exist
+      })
+      .end(done)
+  })
+
   it('should update project when user is admin && if a user is removed from project, he should be removed from all boards aswell', (done) => {
 
     let { Board } = require('../../app/models/models')

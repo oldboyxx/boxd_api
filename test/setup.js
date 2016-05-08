@@ -6,6 +6,8 @@ before('connect to and seed test database', (done) => {
     dropDatabase()
 
     batchInsert({ size: {
+      projects: 5,
+      boards: 5,
       tasks: 6
     }, log: true }, (err, items) => {
       if (err) return done(err)

@@ -11,7 +11,7 @@ let actions = {
     next(req.user.isAdmin ? null : _.$err('denied'))
   },
 
-  validateAccess(admin) {
+  validateAccess(admin, allowPassage) {
     return (req, res, next) => {
       let match = { _id: req.user.id }
       if (admin) _.merge(match, { admin: true })
@@ -19,8 +19,14 @@ let actions = {
       let obj = req.$.board || req.$.project // board must be first
       if (!obj) return next(_.$err('Validation object missing', 400))
 
-      let valid = _.find(obj.users, match)
-      next(valid ? null : _.$err('denied'))
+      let valid = !!_.find(obj.users, match)
+
+      if (allowPassage) {
+        req.accessValidated = valid
+        next()
+      } else {
+        next(valid ? null : _.$err('denied'))
+      }
     }
   },
 
@@ -63,6 +69,14 @@ let actions = {
   updateUserAdmin(model) {
     return (req, res, next) => {
       let r = req.body
+
+      if (req.accessValidated === false) {
+        if (r.remove_user) {
+          r = _.pick(r, ['remove_user'])
+        } else {
+          next(_.$err('denied'))
+        }
+      }
 
       if (r.add_user) {
         let user = { _id: r.add_user, admin: r.admin }

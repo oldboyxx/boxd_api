@@ -47,7 +47,7 @@ function batchBuild(size={}) {
     sample.push(devUser)
 
     let users = _.map(_.uniq(sample), (user, j) => {
-      return { _id: user._id, admin: true }
+      return { _id: user._id, admin: !!j }
     })
 
     return new models.Project({
@@ -61,7 +61,7 @@ function batchBuild(size={}) {
     return _.times(size.boards, (i) => {
 
       let users = _.map(project.users, (user, j) => {
-        return { _id: user._id, admin: true }
+        return { _id: user._id, admin: !!j }
       })
 
       return new models.Board({

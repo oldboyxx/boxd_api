@@ -21,9 +21,9 @@ router.get('/:id',
 
 router.put('/:id',
   $.getItem('board'),
-  $.validateAccess('admin'),
-  $.updateItem('board', 'omit:users:project_id'),
+  $.validateAccess('admin', 'allowPassage'),
   $.updateUserAdmin('board'),
+  $.updateItem('board', 'omit:users:project_id'),
   $.saveItem('board'),
   $.respond()
 )

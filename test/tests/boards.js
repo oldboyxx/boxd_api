@@ -53,6 +53,21 @@ describe('PUT /boards/:id', () => {
       .end(done)
   })
 
+  it('should remove current user from board even if user is not admin', (done) => {
+
+    let { seedBoard, seedUser } = util.getObjAndUser('board', false, true)
+
+    request.put('/boards/'+seedBoard.id)
+      .set(util.token(seedUser))
+      .send({ remove_user: seedUser.id })
+      .expect(200)
+      .expect(res => {
+        let user = _.find(res.body.data.board.users, { _id: seedUser.id })
+        expect(user).to.not.exist
+      })
+      .end(done)
+  })
+
   it('should update board when user is admin', (done) => {
 
     let { seedBoard, seedUser } = util.getObjAndUser('board', true, true)
