@@ -33,12 +33,13 @@ let actions = {
     Board.update(sel, cmd, { multi: true }, next)
   },
 
-  addMember(req, res, next) {
+  addUser(req, res, next) {
     if (!req.body.add_user_email) return next()
     User.findOne({ email: req.body.add_user_email }, (err, user) => {
       if (err) return next(err)
-      if (!user) return next(_.$err("User account with this email doesn't exist."))
+      if (!user) return next(_.$err("User account with this email doesn't exist.", 404))
       req.body = { add_user: user.id, admin: false }
+      req.$.added_user = user
       next()
     })
   }

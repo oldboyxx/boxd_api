@@ -24,11 +24,11 @@ router.get('/:id',
 router.put('/:id',
   $.getItem('project'),
   $.validateAccess('admin', 'allowPassage'),
-  project.addMember,
+  project.addUser,
   $.updateUserAdmin('project'),
   $.updateItem('project', 'omit:users'),
-  project.removeUserFromBoards,
   $.saveItem('project'),
+  project.removeUserFromBoards,
   $.respond()
 )
 
