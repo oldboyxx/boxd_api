@@ -10,8 +10,11 @@ let taskSchema = new Schema({
   },
   desc: {
     type: String,
-    maxlength: 10000,
+    maxlength: 500000,
     trim: true
+  },
+  has_desc: {
+    type: Boolean
   },
   labels: {
     type: [String],
@@ -53,6 +56,11 @@ let taskSchema = new Schema({
     default: false,
     required: true
   }
+})
+
+taskSchema.pre('save', function(next) {
+  this.has_desc = !!this.desc
+  next()
 })
 
 taskSchema.index({ 'list_id': 1 })
