@@ -8,7 +8,8 @@ let listSchema = new Schema({
     trim: true
   },
   position: {
-    type: Number
+    type: Number,
+    required: true
   },
   board_id: {
     type: Schema.Types.ObjectId,

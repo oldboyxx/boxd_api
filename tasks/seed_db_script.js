@@ -77,7 +77,7 @@ function batchBuild(size={}) {
     return _.times(size.lists, (i) => {
       return new models.List({
         title: f.commerce.department(),
-        position: i+1,
+        position: i,
         board_id: board._id,
         archieved: !i
       })
@@ -92,10 +92,11 @@ function batchBuild(size={}) {
       let board = _.find(seeds.boards, { _id: list.board_id })
       let users = _.map(_.sampleSize(board.users, _.random(0,2)), '_id')
 
-      let comments = _.times(2, () => {
+      let comments = _.times(_.random(0,2), () => {
         return {
           content: f.company.catchPhrase(),
-          user: _.sample(board.users)._id
+          user: _.sample(board.users)._id,
+          created_at: new Date
         }
       })
 
@@ -104,7 +105,7 @@ function batchBuild(size={}) {
       return new models.Task({
         title: i%2 ? f.hacker.phrase() : f.commerce.productName(),
         labels,
-        position: i+1,
+        position: i,
         board_id: list.board_id,
         list_id: list._id,
         users,

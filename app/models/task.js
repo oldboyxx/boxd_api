@@ -1,3 +1,5 @@
+let markdown = require('markdown-it')()
+
 let actions = {
 
   validateListAccess(req, res, next) {
@@ -27,6 +29,13 @@ let actions = {
   getUserIDs(req, res, next) {
     let IDs = _.uniq(req.$.task.users.concat(_.map(req.$.task.comments, 'user')))
     req.qArgs = [{ _id: { $in: IDs }}, '-email']
+    next()
+  },
+
+  parseDescMarkdown(req, res, next) {
+    req.$.task = req.$.task.toJSON()
+    if (!req.$.task.desc) return next()
+    req.$.task.desc_parsed = markdown.render(req.$.task.desc)
     next()
   }
 }

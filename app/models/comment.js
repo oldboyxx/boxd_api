@@ -3,7 +3,8 @@ let actions = {
   createComment(req, res, next) {
     req.$.comment = req.$.task.comments.create({
       content: req.body.content,
-      user: req.user.id
+      user: req.user.id,
+      created_at: new Date
     })
 
     req.$.task.comments.push(req.$.comment)

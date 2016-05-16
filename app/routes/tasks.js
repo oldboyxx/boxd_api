@@ -16,6 +16,7 @@ router.get('/:id',
   $.getItem('board', '$.task.board_id'),
   $.validateAccess(),
   task.getUserIDs, $.getItems('user'),
+  task.parseDescMarkdown,
   $.respond('omit:board')
 )
 
@@ -28,6 +29,7 @@ router.put('/:id',
   $.updateItem('task', 'omit:board_id:users:labels:comments:comments_count'),
   task.updateArrays,
   $.saveItem('task'),
+  task.parseDescMarkdown,
   $.respond('omit:board:list')
 )
 

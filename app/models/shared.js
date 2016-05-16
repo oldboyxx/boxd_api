@@ -71,7 +71,8 @@ let actions = {
       let r = req.body
 
       if (req.accessValidated === false) {
-        if (r.remove_user) {
+        // Remove self if not admin
+        if (r.remove_user === req.user.id) {
           r = _.pick(r, ['remove_user'])
         } else {
           next(_.$err('denied'))
