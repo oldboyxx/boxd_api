@@ -7,10 +7,6 @@ let actions = {
     next()
   },
 
-  validateAdmin(req, res, next) {
-    next(req.user.isAdmin ? null : _.$err('denied'))
-  },
-
   validateAccess(admin, allowPassage) {
     return (req, res, next) => {
       let match = { _id: req.user.id }

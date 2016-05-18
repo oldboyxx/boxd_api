@@ -2,23 +2,11 @@ let router = require('express').Router()
 let { user, shared: $ } = require('../models')
 
 router.get('/',
-  $.validateAdmin,
-  $.getItems('user'),
-  $.respond()
-)
-
-router.get('/:id',
-  $.validateAdmin,
-  $.getItem('user'),
-  $.respond()
-)
-
-router.get('/settings',
   $.getItem('user', 'user.id'),
   $.respond()
 )
 
-router.put('/settings',
+router.put('/',
   $.getItem('user', 'user.id'),
   $.updateItem('user'),
   $.saveItem('user'),

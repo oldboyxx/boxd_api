@@ -15,7 +15,7 @@ router.get('/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res, next) => {
     let token = createJWToken(req.user)
-    res.redirect('http://' + req.query.state + '?jwtoken=' + token)
+    res.redirect(req.query.state + '?jwtoken=' + token)
   }
 )
 
