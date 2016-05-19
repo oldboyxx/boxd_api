@@ -63,6 +63,7 @@ taskSchema.pre('save', function(next) {
   next()
 })
 
-taskSchema.index({ 'list_id': 1 })
+taskSchema.index({ list_id: 1 })
+taskSchema.index({ title: 'text' })
 
 module.exports = taskSchema

@@ -1,4 +1,5 @@
 let markdown = require('markdown-it')()
+let { Task } = require('./models')
 
 let actions = {
 
@@ -37,8 +38,29 @@ let actions = {
     if (!req.$.task.desc) return next()
     req.$.task.desc_parsed = markdown.render(req.$.task.desc)
     next()
+  },
+
+  setBoardQueryArgs(req, res, next) {
+    req.qArgs = [{ 'users._id': req.user.id, archieved: false }]
+    next()
+  },
+
+  searchTasks(req, res, next) {
+    let IDs = _.map(req.$.boards, '_id')
+
+    Task.find({
+      board_id: { $in: IDs }, archieved: false,
+      $text: { $search: req.query.search }
+    }, {
+      score: { $meta: 'textScore' }
+    }).sort({ score: { $meta: 'textScore' }}).limit(20).lean().exec((err, tasks) => {
+      if (err) next(err)
+      req.$.tasks = tasks
+      next()
+    })
   }
 }
+
 
 module.exports = actions
 

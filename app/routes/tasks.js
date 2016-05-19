@@ -11,6 +11,12 @@ router.post('/',
   $.respond('omit:board:list')
 )
 
+router.get('/',
+  task.setBoardQueryArgs, $.getItems('board'),
+  task.searchTasks,
+  $.respond('omit:boards')
+)
+
 router.get('/:id',
   $.getItem('task'),
   $.getItem('board', '$.task.board_id'),
