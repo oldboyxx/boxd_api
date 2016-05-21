@@ -19,6 +19,9 @@
     "url": "https://github.com/oldboyxx/boxd_api/issues"
   },
   "homepage": "https://github.com/oldboyxx/boxd_api#readme",
+  "engines": {
+    "node": "5.9.0"
+  },
   "dependencies": {
     "body-parser": "^1.15.0",
     "cors": "^2.7.1",

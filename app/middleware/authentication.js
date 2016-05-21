@@ -78,6 +78,7 @@ function returnCurrentUser(req, res, next) {
 
   User.findById(req.user.id, (err, user) => {
     if (err) return next(err)
+    if (!user) return next(_.$err('denied:jwtoken:userNotFound', 401))
     req.$.current_user = user
     next()
   })

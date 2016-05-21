@@ -5,6 +5,7 @@ config/secrets.js
 node_modules
 db_data
 
+*.env
 *.log
 *.map
 
