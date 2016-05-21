@@ -1,7 +1,7 @@
 let config = {
 
   base: {
-    port: process.env.PORT || 3000
+    port: process.env.$PORT || process.env.PORT || 3000
   },
 
   development: {
@@ -15,6 +15,7 @@ let config = {
   },
 
   production: {
+    appURL: 'http://localhost:3000'
   }
 }
 
