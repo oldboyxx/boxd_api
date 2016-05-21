@@ -15,10 +15,23 @@ let config = {
   },
 
   production: {
-    appURL: 'http://localhost:3000'
+    appURL: 'https://boxd-api.herokuapp.com/'
   }
 }
 
-let cf = _.merge(config.base, config[process.env.NODE_ENV], require('./secrets'))
+let secrets
+try {
+  secrets = require('./secrets')
+} catch(err) {
+  secrets = _.pick(process.env, [
+    'googleOAuthClientID',
+    'googleOAuthSecret',
+    'JWTSecret',
+    'adminEmails',
+    'dbPath'
+  ])
+}
+
+let cf = _.merge(config.base, config[process.env.NODE_ENV], secrets)
 
 module.exports = cf

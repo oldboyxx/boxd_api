@@ -68,7 +68,7 @@ function validateTokenAndSetUser(req, res, next) {
   jwt.verify(token, config.JWTSecret, (err, userData) => {
     if (err) return next(_.$err('denied:jwtoken:invalid', 401))
     req.user = userData
-    req.user.isAdmin = _.includes(config.adminEmails, req.user.email)
+    req.user.isAdmin = _.includes(config.adminEmails.split(' '), req.user.email)
     next()
   })
 }
