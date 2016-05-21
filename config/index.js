@@ -15,7 +15,7 @@ let config = {
   },
 
   production: {
-    appURL: 'https://boxd-api.herokuapp.com/'
+    appURL: 'https://boxd-api.herokuapp.com'
   }
 }
 
