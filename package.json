@@ -4,13 +4,13 @@
   "description": "Api for trello clone with chat",
   "main": "prod.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --exec babel-node -- src/app/start.js",
+    "start": "NODE_ENV=development nodemon --exec babel-node -- app/start.js",
     "test": "NODE_ENV=test mocha",
     "start-db": "mongod --dbpath ./db_data",
-    "seed-db": "NODE_ENV=development nodemon --exec babel-node -- src/tasks/seed_db.js",
-    "build": "rm -rf build && babel -d ./build ./src",
-    "start-prod": "NODE_ENV=production pm2 start build/app/start.js",
-    "seed-db-prod": "NODE_ENV=production build/tasks/seed_db.js"
+    "seed-db": "NODE_ENV=development nodemon --exec babel-node -- tasks/seed_db.js",
+    "build": "rm -rf build && babel -d ./build ./app",
+    "start-prod": "NODE_ENV=production pm2 start build/start.js",
+    "seed-db-prod": "NODE_ENV=production babel-node tasks/seed_db.js"
   },
   "repository": {
     "type": "git",
