@@ -1,6 +1,6 @@
 .DS_Store
 
-config/secrets.js
+src/config/secrets.js
 
 node_modules
 db_data
