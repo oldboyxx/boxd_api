@@ -9,9 +9,8 @@
     "start-db": "mongod --dbpath ./db_data",
     "seed-db": "NODE_ENV=development nodemon --exec babel-node -- tasks/seed_db.js",
     "build": "rm -rf build && babel -d ./build ./app",
-    "start-prod": "NODE_ENV=production pm2 start build/start.js",
-    "seed-db-prod": "NODE_ENV=production babel-node tasks/seed_db.js",
-    "heroku-prebuild": "npm install -g pm2"
+    "start-prod": "NODE_ENV=production node build/start.js",
+    "seed-db-prod": "NODE_ENV=production babel-node tasks/seed_db.js"
   },
   "repository": {
     "type": "git",
@@ -42,7 +41,6 @@
     "mongoose-timestamp": "^0.5.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
-    "pm2": "^1.1.3",
     "require-all": "^2.0.0"
   },
   "devDependencies": {
