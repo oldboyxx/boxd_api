@@ -2,6 +2,7 @@ let passport = require('passport')
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 let jwt = require('jsonwebtoken')
 let config = require('../../config')
+let createOnboardingProject = require('../utils/createOnboardingProject')
 let { User } = require('../models/models')
 
 /**
@@ -35,7 +36,13 @@ function getOrCreateUser(type, userData, callback) {
     if (user) {
       callback(null, user)
     } else {
-      User.create(buildUserObject(type, userData), callback)
+
+      User.create(buildUserObject(type, userData), (err, user) => {
+        if (err) return callback(err)
+        createOnboardingProject(user.id, () => {
+          callback(null, user)
+        })
+      })
     }
   })
 }

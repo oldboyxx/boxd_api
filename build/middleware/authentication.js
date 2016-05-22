@@ -4,6 +4,7 @@ var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
+var createOnboardingProject = require('../utils/createOnboardingProject');
 
 var _require = require('../models/models');
 
@@ -40,7 +41,13 @@ function getOrCreateUser(type, userData, callback) {
     if (user) {
       callback(null, user);
     } else {
-      User.create(buildUserObject(type, userData), callback);
+
+      User.create(buildUserObject(type, userData), function (err, user) {
+        if (err) return callback(err);
+        createOnboardingProject(user.id, function () {
+          callback(null, user);
+        });
+      });
     }
   });
 }
