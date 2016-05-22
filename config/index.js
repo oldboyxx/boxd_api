@@ -1,4 +1,4 @@
-let config = {
+var config = {
 
   base: {
     port: process.env.$PORT || process.env.PORT || 3000
@@ -19,11 +19,10 @@ let config = {
   }
 }
 
-let secrets
 try {
-  secrets = require('./secrets')
+  var secrets = require('./secrets')
 } catch(err) {
-  secrets = _.pick(process.env, [
+  var secrets = _.pick(process.env, [
     'googleOAuthClientID',
     'googleOAuthSecret',
     'JWTSecret',
@@ -32,6 +31,6 @@ try {
   ])
 }
 
-let cf = _.merge(config.base, config[process.env.NODE_ENV], secrets)
+var cf = _.merge(config.base, config[process.env.NODE_ENV], secrets)
 
 module.exports = cf

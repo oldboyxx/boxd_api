@@ -1,4 +1,4 @@
 {
  "presets": [ "es2015" ],
- "only": [ "app", "config", "tasks", "test" ]
+ "only": [ "app", "tasks", "test" ]
 }
