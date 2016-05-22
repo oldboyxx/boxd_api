@@ -9,7 +9,7 @@
     "start-db": "mongod --dbpath ./db_data",
     "seed-db": "NODE_ENV=development nodemon --exec babel-node -- tasks/seed_db.js",
     "build": "rm -rf build && babel -d ./build ./app",
-    "start-prod": "NODE_ENV=production node build/start.js",
+    "start-prod": "NODE_ENV=production pm2 start build/start.js",
     "seed-db-prod": "NODE_ENV=production babel-node tasks/seed_db.js",
     "heroku-prebuild": "npm install -g pm2"
   },
