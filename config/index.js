@@ -15,7 +15,7 @@ var config = {
   },
 
   production: {
-    appURL: 'https://boxd-api.herokuapp.com'
+    appURL: 'http://www.oldboyfx.com/boxd'
   }
 }
 
