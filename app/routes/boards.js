@@ -5,6 +5,7 @@ router.post('/',
   $.getItem('project'),
   $.validateAccess(),
   $.addFirstAdmin,
+  board.addDefaultLabels,
   $.createItem('board'),
   $.respond('omit:project')
 )
@@ -23,6 +24,7 @@ router.put('/:id',
   $.getItem('board'),
   $.validateAccess('admin', 'allowPassage'),
   $.updateUserAdmin('board'),
+  board.updateLabel,
   $.updateItem('board', 'omit:users:project_id'),
   $.saveItem('board'),
   $.respond()

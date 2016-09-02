@@ -16,18 +16,20 @@ _.mixin({ $err(msg, status=500) {
   return err
 }})
 
-_.mixin({ $upsert(arr, matchVal, newVal) {
-  if (_.isObject(arr[0])) {
-    var index = _.indexOf(arr, _.find(arr, matchVal))
-  } else {
-    var index = _.indexOf(arr, matchVal)
-  }
+let getIndex = (arr, val, matchVal) => {
+  matchVal = matchVal ? _.find(arr, matchVal) : val
+  let index = _.indexOf(arr, matchVal)
+  return { arr, val, index }
+}
 
-  if (index > -1) {
-    arr.splice(index, 1, newVal)
-  } else {
-    arr.push(newVal)
-  }
+_.mixin({ $update(...args) {
+  let { arr, val, index } = getIndex(...args)
+  if (index > -1) arr.splice(index, 1, val)
+}})
+
+_.mixin({ $upsert(...args) {
+  let { arr, val, index } = getIndex(...args)
+  index > -1 ? arr.splice(index, 1, val) : arr.push(val)
 }})
 
 let mongoose = require('mongoose')

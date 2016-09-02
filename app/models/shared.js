@@ -77,7 +77,7 @@ let actions = {
 
       if (r.add_user) {
         let user = { _id: r.add_user, admin: r.admin }
-        _.$upsert(req.$[model].users, { _id: r.add_user }, user)
+        _.$upsert(req.$[model].users, user, { _id: r.add_user })
 
       } else if (r.remove_user) {
         req.$[model].users.pull(r.remove_user)

@@ -2,6 +2,7 @@ let mongoose = require('mongoose')
 let f = require('faker')
 let config = require('../config')
 let models = require('../app/models/models')
+let { getDefaultLabels } = require('../app/models/board')
 
 /**
 * Drop database helper
@@ -68,6 +69,7 @@ function batchBuild(size={}) {
         title: f.commerce.department(),
         project_id: project._id,
         users,
+        labels: getDefaultLabels(),
         archieved: !i
       })
     })
@@ -87,12 +89,11 @@ function batchBuild(size={}) {
   seeds.tasks = _.flatMap(seeds.lists, (list) => {
     return _.times(size.tasks, (i) => {
 
-      let labels = _.sampleSize(['red', 'blue', 'green', 'yellow'], 2)
-
       let board = _.find(seeds.boards, { _id: list.board_id })
       let users = _.map(_.sampleSize(board.users, _.random(0,2)), '_id')
+      let labels = _.map(_.sampleSize(board.labels, 1), '_id')
 
-      let comments = _.times(_.random(0,2), () => {
+      let comments = _.times(_.random(1,2), () => {
         return {
           content: f.company.catchPhrase(),
           user: _.sample(board.users)._id,

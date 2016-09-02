@@ -15,6 +15,7 @@ describe('CREATE /boards', () => {
       .expect(res => {
         let board = res.body.data.board
         expect(board.title).to.contain('Board title')
+        expect(board.users).to.be.an('array').and.not.be.empty
         expect(board.users[0]._id).to.equal(seedUser.id)
         expect(board.users[0].admin).to.be.true
         expect(board.archieved).to.be.false
@@ -74,6 +75,10 @@ describe('PUT /boards/:id', () => {
 
     let updateData = {
       title: 'updated',
+      update_label: {
+        _id: seedBoard.labels[0]._id,
+        title: 'Updated Label Title'
+      },
       remove_user: seedUser.id
     }
 
@@ -82,8 +87,10 @@ describe('PUT /boards/:id', () => {
       .send(updateData)
       .expect(200)
       .expect(res => {
-        expect(res.body.data.board.title).to.contain('updated')
-        seedUser = _.find(res.body.data.board.users, { _id: seedUser.id })
+        let { board } = res.body.data
+        expect(board.title).to.contain('updated')
+        expect(board.labels[0].title).to.contain('Updated Label Title')
+        seedUser = _.find(board.users, { _id: seedUser.id })
         expect(seedUser).to.not.exist
       }).end(done)
   })
