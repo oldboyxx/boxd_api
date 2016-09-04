@@ -16,6 +16,18 @@ var actions = {
       }
       next();
     };
+  },
+  addDefaultLabels: function addDefaultLabels(req, res, next) {
+    req.body.labels = actions.getDefaultLabels();
+    next();
+  },
+  updateLabel: function updateLabel(req, res, next) {
+    var newLabel = req.body.update_label;
+    if (newLabel) req.$.board.labels.id(newLabel._id).set(newLabel);
+    next();
+  },
+  getDefaultLabels: function getDefaultLabels() {
+    return [{ title: '', color: '#5DB94F' }, { title: '', color: '#F3D300' }, { title: '', color: '#FFAB49' }, { title: '', color: '#ED5F45' }, { title: '', color: '#C57EE0' }, { title: '', color: '#007BBF' }];
   }
 };
 

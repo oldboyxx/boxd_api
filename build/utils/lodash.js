@@ -21,19 +21,33 @@ _.mixin({
   }
 });
 
-_.mixin({
-  $upsert: function $upsert(arr, matchVal, newVal) {
-    if (_.isObject(arr[0])) {
-      var index = _.indexOf(arr, _.find(arr, matchVal));
-    } else {
-      var index = _.indexOf(arr, matchVal);
-    }
+var getIndex = function getIndex(arr, val, matchVal) {
+  matchVal = matchVal ? _.find(arr, matchVal) : val;
+  var index = _.indexOf(arr, matchVal);
+  return { arr: arr, val: val, index: index };
+};
 
-    if (index > -1) {
-      arr.splice(index, 1, newVal);
-    } else {
-      arr.push(newVal);
-    }
+_.mixin({
+  $update: function $update() {
+    var _getIndex = getIndex.apply(undefined, arguments);
+
+    var arr = _getIndex.arr;
+    var val = _getIndex.val;
+    var index = _getIndex.index;
+
+    if (index > -1) arr.splice(index, 1, val);
+  }
+});
+
+_.mixin({
+  $upsert: function $upsert() {
+    var _getIndex2 = getIndex.apply(undefined, arguments);
+
+    var arr = _getIndex2.arr;
+    var val = _getIndex2.val;
+    var index = _getIndex2.index;
+
+    index > -1 ? arr.splice(index, 1, val) : arr.push(val);
   }
 });
 

@@ -2,6 +2,7 @@
 
 var Schema = require('mongoose').Schema;
 var userAdminSchema = require('./userAdmin');
+var labelSchema = require('./label');
 
 var boardSchema = new Schema({
   title: {
@@ -14,6 +15,10 @@ var boardSchema = new Schema({
     type: String,
     maxlength: 500,
     trim: true
+  },
+  labels: {
+    type: [labelSchema],
+    default: []
   },
 
   project_id: {
