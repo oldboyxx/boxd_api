@@ -62,6 +62,7 @@ var taskSchema = new Schema({
 
 taskSchema.pre('save', function (next) {
   this.has_desc = !!this.desc;
+  this.comments_count = this.comments.length;
   next();
 });
 

@@ -4,15 +4,22 @@ var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
-var createOnboardingProject = require('../utils/createOnboardingProject');
+var userActions = require('../models/user');
 
 var _require = require('../models/models');
 
 var User = _require.User;
 
 /**
-* Define passport strategies
+* Local utils
 */
+
+function createNameFromEmail(email) {
+  var str = email.split('@')[0];
+  var firstName = _.upperFirst(str.split('.')[0]);
+  var lastName = _.upperFirst(str.split('.')[1]);
+  return lastName ? firstName + ' ' + lastName : firstName;
+}
 
 function getEmail(type, userData) {
   if (type === 'google') {
@@ -21,10 +28,11 @@ function getEmail(type, userData) {
 }
 
 function buildUserObject(type, userData) {
+  var email = getEmail(type, userData);
   if (type === 'google') {
     return {
-      name: userData.displayName,
-      email: getEmail(type, userData),
+      name: userData.displayName || createNameFromEmail(email),
+      email: email,
       avatar: {
         provider: type,
         url: userData.photos[0].value
@@ -41,25 +49,22 @@ function getOrCreateUser(type, userData, callback) {
     if (user) {
       callback(null, user);
     } else {
-
-      User.create(buildUserObject(type, userData), function (err, user) {
-        if (err) return callback(err);
-        createOnboardingProject(user.id, function () {
-          callback(null, user);
-        });
-      });
+      var userObject = buildUserObject(type, userData);
+      userActions.createUser(userObject, callback);
     }
   });
 }
+
+/**
+* Define passport strategies
+*/
 
 passport.use(new GoogleStrategy({
   clientID: config.googleOAuthClientID,
   clientSecret: config.googleOAuthSecret,
   callbackURL: config.appURL + '/auth/google/callback'
 }, function (accessToken, refreshToken, profile, done) {
-  getOrCreateUser('google', profile, function (err, user) {
-    done(err, user);
-  });
+  getOrCreateUser('google', profile, done);
 }));
 
 /**

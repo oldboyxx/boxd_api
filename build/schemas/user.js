@@ -5,7 +5,6 @@ var Schema = require('mongoose').Schema;
 var userSchema = new Schema({
   name: {
     type: String,
-    required: true,
     maxlength: 40,
     trim: true
   },

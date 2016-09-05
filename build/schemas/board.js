@@ -1,6 +1,7 @@
 'use strict';
 
-var Schema = require('mongoose').Schema;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var userAdminSchema = require('./userAdmin');
 var labelSchema = require('./label');
 
@@ -18,7 +19,7 @@ var boardSchema = new Schema({
   },
   labels: {
     type: [labelSchema],
-    default: []
+    default: [{ _id: mongoose.Types.ObjectId(), title: 'Finished', color: '#5DB94F' }, { _id: mongoose.Types.ObjectId(), title: 'Due soon', color: '#F3D300' }, { _id: mongoose.Types.ObjectId(), title: 'Late', color: '#FFAB49' }, { _id: mongoose.Types.ObjectId(), title: 'Bug', color: '#ED5F45' }, { _id: mongoose.Types.ObjectId(), title: 'Frozen', color: '#C57EE0' }, { _id: mongoose.Types.ObjectId(), title: 'Current', color: '#007BBF' }]
   },
 
   project_id: {

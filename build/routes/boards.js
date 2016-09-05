@@ -8,7 +8,7 @@ var board = _require.board;
 var $ = _require.shared;
 
 
-router.post('/', $.getItem('project'), $.validateAccess(), $.addFirstAdmin, board.addDefaultLabels, $.createItem('board'), $.respond('omit:project'));
+router.post('/', $.getItem('project'), $.validateAccess(), $.addFirstAdmin, $.createItem('board'), $.respond('omit:project'));
 
 router.get('/:id', $.getItem('board'), $.getItem('project', '$.board.project_id'), $.validateAccess(), board.setQueryArgs('lists'), $.getItems('list'), board.setQueryArgs('tasks'), $.getItems('task'), board.setQueryArgs('users'), $.getItems('user'), $.respond());
 
