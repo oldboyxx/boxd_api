@@ -8,7 +8,6 @@ let actions = {
     })
 
     req.$.task.comments.push(req.$.comment)
-    req.$.task.comments_count = req.$.task.comments.length
     next()
   },
 
@@ -31,7 +30,6 @@ let actions = {
     if (req.user.id !== req.$.comment.user) return next(_.$err('denied'))
 
     comments.splice(_.indexOf(comments, req.$.comment), 1)
-    req.$.task.comments_count = comments.length
     next()
   }
 }

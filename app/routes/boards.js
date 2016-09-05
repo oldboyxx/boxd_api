@@ -5,7 +5,6 @@ router.post('/',
   $.getItem('project'),
   $.validateAccess(),
   $.addFirstAdmin,
-  board.addDefaultLabels,
   $.createItem('board'),
   $.respond('omit:project')
 )

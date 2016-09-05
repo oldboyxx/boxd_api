@@ -75,19 +75,27 @@ function createOnboardingProject(userID, callback) {
         }))
 
         tasks.push(new Task({
-          title: 'Try leaving a comment on this task.',
-          comments: [{ content: 'I\'m from the future!', user: userID, created_at: new Date }],
+          title: 'You can assign members to any task by dragging them from the side menu.',
+          users: [userID],
           list_id: lists[1]._id,
           board_id: board._id,
           position: 2
         }))
 
         tasks.push(new Task({
-          title: 'You can assign members to any task.',
-          users: [userID],
+          title: 'You can also assign labels to any task.',
+          labels: [board.labels[0]._id],
           list_id: lists[1]._id,
           board_id: board._id,
           position: 3
+        }))
+
+        tasks.push(new Task({
+          title: 'Try leaving a comment on this task.',
+          comments: [{ content: 'I\'m from the future!', user: userID, created_at: new Date }],
+          list_id: lists[1]._id,
+          board_id: board._id,
+          position: 4
         }))
 
         Task.create(tasks, () => {

@@ -2,7 +2,6 @@ let mongoose = require('mongoose')
 let f = require('faker')
 let config = require('../config')
 let models = require('../app/models/models')
-let { getDefaultLabels } = require('../app/models/board')
 
 /**
 * Drop database helper
@@ -69,7 +68,6 @@ function batchBuild(size={}) {
         title: f.commerce.department(),
         project_id: project._id,
         users,
-        labels: getDefaultLabels(),
         archieved: !i
       })
     })
@@ -105,11 +103,11 @@ function batchBuild(size={}) {
 
       return new models.Task({
         title: i%2 ? f.hacker.phrase() : f.commerce.productName(),
-        labels,
         position: i,
         board_id: list.board_id,
         list_id: list._id,
         users,
+        labels,
         comments,
         comments_count,
         archieved: !i

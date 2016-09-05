@@ -2,12 +2,19 @@ let passport = require('passport')
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 let jwt = require('jsonwebtoken')
 let config = require('../../config')
-let createOnboardingProject = require('../utils/createOnboardingProject')
+let userActions = require('../models/user')
 let { User } = require('../models/models')
 
 /**
-* Define passport strategies
+* Local utils
 */
+
+function createNameFromEmail(email) {
+  let str = email.split('@')[0]
+  let firstName = _.upperFirst(str.split('.')[0])
+  let lastName = _.upperFirst(str.split('.')[1])
+  return lastName ? `${firstName} ${lastName}` : firstName
+}
 
 function getEmail(type, userData) {
   if (type === 'google') {
@@ -16,10 +23,11 @@ function getEmail(type, userData) {
 }
 
 function buildUserObject(type, userData) {
+  let email = getEmail(type, userData)
   if (type === 'google') {
     return {
-      name: userData.displayName,
-      email: getEmail(type, userData),
+      name: userData.displayName || createNameFromEmail(email),
+      email: email,
       avatar: {
         provider: type,
         url: userData.photos[0].value
@@ -36,16 +44,15 @@ function getOrCreateUser(type, userData, callback) {
     if (user) {
       callback(null, user)
     } else {
-
-      User.create(buildUserObject(type, userData), (err, user) => {
-        if (err) return callback(err)
-        createOnboardingProject(user.id, () => {
-          callback(null, user)
-        })
-      })
+      let userObject = buildUserObject(type, userData)
+      userActions.createUser(userObject, callback)
     }
   })
 }
+
+/**
+* Define passport strategies
+*/
 
 passport.use(new GoogleStrategy({
     clientID: config.googleOAuthClientID,
@@ -53,9 +60,7 @@ passport.use(new GoogleStrategy({
     callbackURL: config.appURL + '/auth/google/callback'
   },
   (accessToken, refreshToken, profile, done) => {
-    getOrCreateUser('google', profile, (err, user) => {
-      done(err, user)
-    })
+    getOrCreateUser('google', profile, done)
   }
 ))
 

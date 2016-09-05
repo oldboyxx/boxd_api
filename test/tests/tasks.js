@@ -37,7 +37,7 @@ describe('GET /tasks/:id', () => {
       .expect(res => {
         let data = res.body.data
         expect(data.task._id).to.equal(seedTask.id)
-        expect(data.task.labels).to.be.an('array').and.not.be.empty
+        expect(data.task.labels).to.be.an('array')
         expect(data.task.users).to.be.an('array')
         expect(data.task.comments).to.be.an('array').and.not.be.empty
         expect(data.task.comments_count).to.be.a('number')
@@ -51,7 +51,7 @@ describe('PUT /tasks/:id', () => {
 
     let { seedBoard, seedUser } = util.getObjAndUser('board', false)
     let seedTask = _.find(seeds.tasks, { board_id: seedBoard._id })
-    let seedTaskLabel = seedTask.labels[0]
+    let seedBoardLabel = seedBoard.labels[0]
     let seedTaskUser = _.reject(seedBoard.users, { _id: seedTask.users[0] })[0]._id
 
     let seedList = _.find(seeds.lists, (list) => {
@@ -61,7 +61,7 @@ describe('PUT /tasks/:id', () => {
 
     let updateData = {
       position: 10,
-      remove_label: seedTaskLabel,
+      add_label: seedBoardLabel.id,
       add_user: seedTaskUser,
       list_id: seedList.id,
       comments_count: 666
@@ -74,7 +74,7 @@ describe('PUT /tasks/:id', () => {
       .expect(res => {
         let task = res.body.data.task
         expect(task.position).to.equal(10)
-        expect(task.labels).to.not.contain(seedTaskLabel)
+        expect(task.labels).to.contain(seedBoardLabel.id)
         expect(task.users).to.contain(seedTaskUser)
         expect(task.list_id).to.equal(seedList.id)
         expect(task.comments_count).to.not.equal(666)
