@@ -1,5 +1,6 @@
 .DS_Store
 
+build
 config/secrets.js
 
 node_modules
