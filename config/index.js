@@ -15,7 +15,7 @@ var config = {
   },
 
   production: {
-    appURL: 'http://boxd-api.oldboyfx.com'
+    appURL: 'http://boxd-api.ivorreic.com'
   }
 }
 
